@@ -16,3 +16,12 @@ Bonus objectives:
 1. Create preloaded rooms and stlyes so a user can view the layouts of famous apartments, whether it be Don Draper or Carrie Bradshaw, that a user could then customize to their liking. 
 2. Allow users to add colors and patterns to objects in their spaces. 
 3. Include a Yelp API for local furniture stores in their area. 
+
+
+Projected Technologies: 
+HTML5
+SCSS
+JavaScript
+Paper.js
+Webpack
+myCanvas
