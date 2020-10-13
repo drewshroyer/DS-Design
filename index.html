@@ -1,12 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./dist/main.css" />
-        <script type="text/javascript" src="paper/paper-full.min.js" canvas="myCanvas"></script>
-        <script type="text/paperscript" src="js/myScript.js" canvas="myCanvas"></script>
-    <title>AD DESIGN</title>
-</head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="./dist/main.css" />   
+        <link rel="icon" href="./dist/images/favicon.ico">
+        
+        <!-- <script type="text/javascript" src="paper/paper-full.min.js" canvas="myCanvas"></script>
+            <script type="text/paperscript" src="js/myScript.js" canvas="myCanvas"></script> -->
+        <title>AD DESIGN</title>
+    </head>
+
+    <body id="body">
+        <Header class="header-main">
+            <nav class="header-nav-main">
+                
+                <svg class="header-icon" focusable="false" viewBox="0 0 32 32" width="32" height="32"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <title>Menu</title>
+                    <path d="M8 10h16v2H8v-2zm0 5h16v2H8v-2zm0 5h16v2H8v-2z" fill-rule="evenodd"></path>
+                </svg>
+                <!-- <ul id="myDropdown" class="dropdown-content">
+                    <li><a href="https://www.linkedin.com/in/drew-shroyer-861b32a4/">LinkedIn</a></li>
+                    <li><a href="https://www.linkedin.com/in/drew-shroyer-861b32a4/">Github</a></li>
+                    <li><a href="www.drewshroyer.com">Contact</a></li>
+                    </ul> -->
+                </div>
+                </div>
+                <h1 class="header-nav-title"> DS</h1>
+                <div class="header-nav-right-corner">
+                    <div class="linkedin-button-header"><a href="https://www.linkedin.com/in/drew-shroyer-861b32a4/"
+                        >Linkedin</a>
+                    </div>
+                    <svg id="header-icon-search" focusable="false" viewBox="0 0 32 32" width="32" height="32"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <title>Search</title>
+                        <path
+                            d="M14.5 10a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zm5.249 8.335l4.458 4.458-1.414 1.414-4.458-4.458a6.5 6.5 0 1 1 1.414-1.414z"
+                            fill-rule="nonzero"></path>
+                    </svg>
+                </div>
+            </nav>
+            <div class="line-across-the-top"></div>
+        </Header>
+
+        <section class="content-main">
+            <section class="left-side-bar-container">
+                <div id="myModal">
+                   
+                    <div id="modal-content-enter-room-size">
+                        <span class="close">&times;</span>
+                        <div id="header-nav-title"> DS</div>
+                        <div class="entry-modal-title">ENTER YOUR ROOM DIMENSIONS</div>
+                        <div class="height-width-modal">
+                            Height:<input class="input-container-modal-form" placeholder="inches"></div>
+                        <div class="height-width-modal">
+                        Width:<input class="input-container-modal-form" placeholder="inches"></div>
+                        <button class="start-planning-modal-button">Start Planning</button>
+                    </div>
+    
+            </section>
+
+
+        <div class="right-canvas-container">
+            <div class="subnavbar-container">
+                <div class="open-and-new-buttons">
+                    <button id="myBtn">New</button>
+                    
+                    <h2 id="open-file">Open</h2>
+                </div>
+                <div class="print-and-save-buttons">
+                    <h2 id="download-file">Print</h2>
+                    <h2 id="download-file">Save</h2>
+                </div>   
+            </div>
+            <canvas id="canvas">
+            </canvas>
+            <script src="./src/index.js"></script>
+            <!-- <script src="./src/scripts/canvas/simpleDraw.js"></script> -->
+            <script>
+    var modal = document.getElementById("myModal");
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+    // When the user clicks the button, open the modal
+    btn.onclick = function () {
+        modal.style.display = "block";
+    };
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    };
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none"; 
+    }}
+
+            </script>
+            </div>
+        </section>   
+        </div>
+    </body>
 </html>
