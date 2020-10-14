@@ -1,10 +1,21 @@
 import "./styles/index.scss";
-// import MenuOptions from "./scripts/nav-options/nav-options";
-// import dropdownFunction from "./scripts/nav-options/dropdown";
+import paper, { Rectangle, Path, Point, Tool, PointText } from "paper";
+import Sidebar from "./scripts/sidebar/sidebar";
+import sidebarData from "./scripts/util/sidebar_data";
 
-window.addEventListener("load", () => {
+window.addEventListener("DOMContentLoaded", (main) => {
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
+  //sidebar
+
+  const sidebarElement = document.getElementById("section-content-sidebar");
+  const sidebar = new Sidebar(
+    sidebarData[0],
+    sidebarElement,
+    canvas.drawShapes
+  );
+
+  //info side bar
 
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
@@ -26,7 +37,7 @@ window.addEventListener("load", () => {
     ctx.lineCap = "round";
     ctx.strokeStyle = "red";
 
-    cts.lineTo(e.clientX, e.clientY);
+    ctx.lineTo(e.clientX, e.clientY);
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(e.clientX, e.clientY);

@@ -46,27 +46,26 @@
         </Header>
 
         <section class="content-main">
-            <section class="left-side-bar-container">
+            <section id="section-content-sidebar" class="left-side-bar-container">
                 <div id="myModal">
-                   
                     <div id="modal-content-enter-room-size">
+                        <form id="myHoustOutLineForm">
                         <span class="close">&times;</span>
                         <div id="header-nav-title"> DS</div>
                         <div class="entry-modal-title">ENTER YOUR ROOM DIMENSIONS</div>
                         <div class="height-width-modal">
-                            Height:<input class="input-container-modal-form" placeholder="inches"></div>
+                            Height:<input id="height-input" class="input-container-modal-form" placeholder="inches"></div>
                         <div class="height-width-modal">
-                        Width:<input class="input-container-modal-form" placeholder="inches"></div>
-                        <button class="start-planning-modal-button">Start Planning</button>
+                        Width:<input id="weight-input" class="input-container-modal-form" placeholder="inches"></div>
+                        <button id="submit-dimension-button" class="start-planning-modal-button">Start Planning</button>
+                        </form>
                     </div>
-    
             </section>
-
 
         <div class="right-canvas-container">
             <div class="subnavbar-container">
                 <div class="open-and-new-buttons">
-                    <button id="myBtn">New</button>
+                    <button class="new-layout-button" id="myBtn">New</button>
                     
                     <h2 id="open-file">Open</h2>
                 </div>
@@ -77,29 +76,63 @@
             </div>
             <canvas id="canvas">
             </canvas>
-            <script src="./src/index.js"></script>
-            <!-- <script src="./src/scripts/canvas/simpleDraw.js"></script> -->
-            <script>
-    var modal = document.getElementById("myModal");
-    // Get the button that opens the modal
-    var btn = document.getElementById("myBtn");
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-    // When the user clicks the button, open the modal
-    btn.onclick = function () {
-        modal.style.display = "block";
-    };
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function () {
-        modal.style.display = "none";
-    };
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function (event) {
-        if (event.target == modal) {
-            modal.style.display = "none"; 
-    }}
+            <script src="./dist/main.js"></script>
+            
+        <script>
+            // function init() {
+            let modal = document.getElementById("myModal");
+            let btn = document.getElementById("myBtn");
+            let close = document.getElementsByClassName("close")[0];
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            let myHoustOutLineForm = document.getElementById('myHoustOutLineForm')
+            let startPlanningButton = document.getElementById("submit-dimension-button");
 
-            </script>
+        
+            function draw(height, width) {
+                ctx.strokeStyle = "black";
+                ctx.lineWidth = 5;
+                ctx.strokeRect(80, 80, height, width);
+            }
+
+            btn.onclick = function () {
+                modal.style.display = "block";
+            };
+
+            close.onclick = function () {
+                modal.style.display = "none";
+            };
+
+            startPlanningButton.onclick = function () {
+               if (event.target === modal) {
+                    modal.style.display = "none";
+                }};
+
+            window.onclick = function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none"; 
+            }}
+
+            function defineRoom() {
+                let startPlanning = document.getElementById("submit-dimension-button");
+                let height = document.getElementsByTagName('input')[0];
+                let width = document.getElementsByTagName('input')[1];
+                const canvas = document.getElementById("canvas");
+                const ctx = canvas.getContext("2d");
+
+                function draw(height, width) {
+                    debugger
+                    ctx.strokeStyle = "black";
+                    ctx.lineWidth = 5;
+                    ctx.strokeRect(80, 80, height, width);
+                }
+
+                startPlanning.addEventListener("click", function () { draw(height, width) });
+                modal.style.display = "none";
+            }
+            startPlanningButton.addEventListener('click', defineRoom)
+        </script>
+
             </div>
         </section>   
         </div>
