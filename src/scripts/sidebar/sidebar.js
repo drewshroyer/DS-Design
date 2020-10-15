@@ -15,13 +15,11 @@ export default class Sidebar {
   }
 
   draw() {
-    //adds category title in sidebar
       const categoryTitleElement = document.createElement("h1");
       categoryTitleElement.innerHTML = this.categoryTitle;
       categoryTitleElement.setAttribute("class", "sidebar-category-title");
       this.sidebarElement.appendChild(categoryTitleElement);
 
-    //adds category shapes in sidebar
     const shapesUlElement = document.createElement("ul");
     shapesUlElement.setAttribute("class", "sidebar-category-shapes-ul");
     for (let i = 0; i < this.shapes.length; i++) {

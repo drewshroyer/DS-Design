@@ -1,12 +1,10 @@
 import "./styles/index.scss";
-import paper, { Rectangle, Path, Point, Tool, PointText } from "paper";
 import Sidebar from "./scripts/sidebar/sidebar";
 import sidebarData from "./scripts/util/sidebar_data";
 
 window.addEventListener("DOMContentLoaded", (main) => {
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
-  //sidebar
 
   const sidebarElement = document.getElementById("section-content-sidebar");
   const sidebar = new Sidebar(
@@ -14,8 +12,6 @@ window.addEventListener("DOMContentLoaded", (main) => {
     sidebarElement,
     canvas.drawShapes
   );
-
-  //info side bar
 
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
@@ -31,11 +27,11 @@ window.addEventListener("DOMContentLoaded", (main) => {
     ctx.beginPath();
   }
 
-  function draw(e) {
+  function scribble(e) {
     if (!painting) return;
-    ctx.lineWidth = 5;
+    ctx.lineWidth = 2;
     ctx.lineCap = "round";
-    ctx.strokeStyle = "red";
+    ctx.strokeStyle = "blue";
 
     ctx.lineTo(e.clientX, e.clientY);
     ctx.stroke();
@@ -45,6 +41,6 @@ window.addEventListener("DOMContentLoaded", (main) => {
 
   canvas.addEventListener("mousedown", startPosition);
   canvas.addEventListener("mouseup", finishPosition);
-  canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mousemove", scribble);
 });
 

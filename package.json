@@ -17,7 +17,8 @@
   "author": "mrcjbradley",
   "license": "ISC",
   "dependencies": {
-    "paper": "^0.12.11"
+    "paper": "^0.12.11",
+    "print-js": "^1.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",

@@ -2,7 +2,7 @@ import { SHAPES } from "./constants";
 
 const sidebarData = [
   {
-    categoryName: "Furniture",
+    categoryName: "General Purpose",
     shapes: [
       {
         name: SHAPES.QUEEN,
@@ -12,6 +12,9 @@ const sidebarData = [
         name: SHAPES.TWIN,
         uri: "./src/images/twin-bed.svg",
       },
+    // ],
+    // categoryName: "General Purpose",
+    // shapes: [
       {
         name: SHAPES.ARMCHAIR,
         uri: "./src/images/arm-chair.svg",
@@ -21,12 +24,12 @@ const sidebarData = [
         uri: "./src/images/upholstered-chair.svg",
       },
       {
-        name: SHAPES.RUG,
-        uri: "./src/images/rug.svg",
-      },
-      {
         name: SHAPES.DINING,
         uri: "./src/images/dining-table.svg",
+      },
+      {
+        name: SHAPES.ROUNDTABLE,
+        uri: "./src/images/round-table.svg",
       },
       {
         name: SHAPES.TVCABINENT,
@@ -43,6 +46,30 @@ const sidebarData = [
       {
         name: SHAPES.ENDTABLE,
         uri: "./src/images/end-table.svg",
+      },
+      {
+        name: SHAPES.RUG,
+        uri: "./src/images/rug.svg",
+      },
+      {
+        name: SHAPES.ROUNDRUG,
+        uri: "./src/images/round-rug.svg",
+      },
+      {
+        name: SHAPES.LOVESEAT,
+        uri: "./src/images/love-seat.svg",
+      },
+      {
+        name: SHAPES.COFFEETABLE,
+        uri: "./src/images/coffee-table.svg",
+      },
+      {
+        name: SHAPES.FIREPLACE,
+        uri: "./src/images/fire-place.svg",
+      },
+      {
+        name: SHAPES.STAIRS,
+        uri: "./src/images/stairs.svg",
       },
     ],
   },

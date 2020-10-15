@@ -56,7 +56,7 @@
                         <div class="height-width-modal">
                             Height:<input id="height-input" class="input-container-modal-form" placeholder="inches"></div>
                         <div class="height-width-modal">
-                        Width:<input id="weight-input" class="input-container-modal-form" placeholder="inches"></div>
+                        Width:<input id="width-input" class="input-container-modal-form" placeholder="inches"></div>
                         <button id="submit-dimension-button" class="start-planning-modal-button">Start Planning</button>
                         </form>
                     </div>
@@ -67,10 +67,10 @@
                 <div class="open-and-new-buttons">
                     <button class="new-layout-button" id="myBtn">New</button>
                     
-                    <h2 id="open-file">Open</h2>
+                    <a href="/"><h2 id="open-file">Clear</h2></a>
                 </div>
                 <div class="print-and-save-buttons">
-                    <h2 id="download-file">Print</h2>
+                    <h2 id="print-file">Print</h2>
                     <h2 id="download-file">Save</h2>
                 </div>   
             </div>
@@ -79,20 +79,17 @@
             <script src="./dist/main.js"></script>
             
         <script>
-            // function init() {
+            // debugger
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
             let modal = document.getElementById("myModal");
             let btn = document.getElementById("myBtn");
             let close = document.getElementsByClassName("close")[0];
-            const canvas = document.getElementById("canvas");
-            const ctx = canvas.getContext("2d");
-            let myHoustOutLineForm = document.getElementById('myHoustOutLineForm')
             let startPlanningButton = document.getElementById("submit-dimension-button");
+            let print = document.getElementById("print-file");
 
-        
-            function draw(height, width) {
-                ctx.strokeStyle = "black";
-                ctx.lineWidth = 5;
-                ctx.strokeRect(80, 80, height, width);
+            print.onclick = function () {
+                window.print();
             }
 
             btn.onclick = function () {
@@ -104,33 +101,24 @@
             };
 
             startPlanningButton.onclick = function () {
-               if (event.target === modal) {
-                    modal.style.display = "none";
-                }};
-
-            window.onclick = function (event) {
                 if (event.target === modal) {
-                    modal.style.display = "none"; 
-            }}
-
-            function defineRoom() {
-                let startPlanning = document.getElementById("submit-dimension-button");
-                let height = document.getElementsByTagName('input')[0];
-                let width = document.getElementsByTagName('input')[1];
-                const canvas = document.getElementById("canvas");
-                const ctx = canvas.getContext("2d");
-
-                function draw(height, width) {
-                    debugger
-                    ctx.strokeStyle = "black";
-                    ctx.lineWidth = 5;
-                    ctx.strokeRect(80, 80, height, width);
+                    modal.style.display = "none";
                 }
+            };
 
-                startPlanning.addEventListener("click", function () { draw(height, width) });
+            startPlanningButton.addEventListener('click', function defineRoom(event) {
+                event.preventDefault();
+                let startPlanning = document.getElementById("submit-dimension-button");
+                let height = (document.getElementById('height-input').value) * 5;
+                let width = (document.getElementById('width-input').value) * 5;
+                const canvas = document.getElementById("canvas");  
+                const ctx = canvas.getContext("2d");
+                ctx.strokeStyle = "black";
+                ctx.lineWidth = 5;
+                ctx.strokeRect(80, 80, width, height);
                 modal.style.display = "none";
-            }
-            startPlanningButton.addEventListener('click', defineRoom)
+            })
+        
         </script>
 
             </div>
