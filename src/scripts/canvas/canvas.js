@@ -41,11 +41,7 @@ class DrawCanvas {
 
     // sets up paper js on canvas
     paper.setup(canvasElement);
-
-    //creates new project in paper
     this.project = new Project(canvasElement);
-
-    //canvas scale value
     this.canvasScaleValue = 1;
 
     //creating tool
@@ -54,18 +50,8 @@ class DrawCanvas {
     tool.minDistance = 2;
 
     //binds methods
-    //shapes method binding
-    this.drawShapes = this.drawShapes.bind(this);
-    this.drawClassShape = this.drawClassShape.bind(this);
-    this.drawLineShape = this.drawLineShape.bind(this);
     this.drawObjectShape = this.drawObjectShape.bind(this);
     this.drawTextShape = this.drawTextShape.bind(this);
-    this.drawUserCaseShape = this.drawUseCaseShape.bind(this);
-    this.drawComponentShape = this.drawComponentShape.bind(this);
-    this.drawModuleShape = this.drawModuleShape.bind(this);
-    this.drawActivityShape = this.drawActivityShape.bind(this);
-    this.drawDecisionShape = this.drawDecisionShape.bind(this);
-    this.drawActorShape = this.drawActorShape.bind(this);
 
     //general method binding
     this.getCenterPosition = this.getCenterPosition.bind(this);
@@ -86,53 +72,11 @@ class DrawCanvas {
     //add double click listener on canvas because tool have no double click listener
     this.canvasElement.addEventListener("dblclick", this.onToolDoubleClick);
 
-    //set right menu liteners
-    // this.setMenuClickListener = this.setMenuClickListener.bind(this);
-
     //line attachement function binding
     this.checkLineAttachment = this.checkLineAttachment.bind(this);
 
     //line render function
     this.reRenderLine = this.reRenderLine.bind(this);
-
-    // this.setMenuClickListener();
-  }
-
-  //set input to open file picker dialog
-  openFile() {
-    let input = document.createElement("input");
-    input.type = "file";
-    input.multiple = false;
-    input.accept = "image/svg+xml";
-    input.onchange = () => {
-      this.project.importSVG(
-        URL.createObjectURL(input.files[0]),
-        (group, svg) => {
-          this.project.clear();
-          const that = this;
-          while (group.children[1].children.length > 0) {
-            that.project.activeLayer.addChild(group.children[1].children[0]);
-          }
-        }
-      );
-    };
-    input.click();
-  }
-
-  // set download project as svg
-  downloadAsSVG() {
-    if (this.project.activeLayer.children.length == 0) return;
-
-    const fileName = `umlchart_${Date.now()}.svg`;
-
-    var url =
-      "data:image/svg+xml;utf8," +
-      encodeURIComponent(this.project.exportSVG({ asString: true }));
-
-    var downloadLinkElement = document.createElement("a");
-    downloadLinkElement.download = fileName;
-    downloadLinkElement.href = url;
-    downloadLinkElement.click();
   }
 
   //set bring to front listener for items
@@ -149,12 +93,6 @@ class DrawCanvas {
   drawShapes(shapeName) {
     switch (shapeName) {
       case SHAPES.CLASS:
-        this.drawClassShape();
-        break;
-      case SHAPES.QUEEN:
-      case SHAPES.TWIN:
-      case SHAPES.ARMCHAIR:
-      case SHAPES.SOFA:
       case SHAPES.OFFICE:
       case SHAPES.ENDTABLE:
       case SHAPES.RUG:
@@ -166,19 +104,14 @@ class DrawCanvas {
       case SHAPES.FIREPLACE:
       case SHAPES.STAIRS:
       case SHAPES.UPHOLSTERED:
-        let startPoint = new Point(
-          this.centerPosition.x - 50,
-          this.centerPosition.y
-        );
-        let endPoint = new Point(
-          this.centerPosition.x + 50,
-          this.centerPosition.y
-        );
-        this.drawLineShape(startPoint, endPoint, shapeName);
-        break;
       case SHAPES.DINING:
       case SHAPES.ROUNDTABLE:
       case SHAPES.TVCABINENT:
+      case SHAPES.QUEEN:
+      case SHAPES.TWIN:
+      case SHAPES.ARMCHAIR:
+      case SHAPES.SOFA:
+      case SHAPES.MODULE:
         this.drawObjectShape(shapeName);
         break;
       case SHAPES.TITLE:
@@ -188,75 +121,9 @@ class DrawCanvas {
         );
         this.drawTextShape(startPoint, "Add Text");
         break;
-      case SHAPES.CIRCLE:
-      case SHAPES.USECASE:
-        this.drawUseCaseShape(shapeName);
-        break;
-      case SHAPES.COMPONENT:
-        this.drawComponentShape();
-        break;
-      case SHAPES.MODULE:
-        this.drawModuleShape();
-        break;
-      case SHAPES.ACTIVITY:
-        this.drawActivityShape();
-        break;
-      case SHAPES.DECISION:
-        this.drawDecisionShape();
-        break;
-      case SHAPES.ACTOR:
-        this.drawActorShape();
       default:
         break;
     }
-  }
-
-  // Creates three rectangle to make a class UML
-  drawClassShape() {
-    //creates group and add shapes
-
-    //create class rectangle
-    const groupClass = new Group();
-    const firstRectX = this.centerPosition.x - 50;
-    const firstRectY = this.centerPosition.y - 50;
-    const firstRectHeight = 20;
-    const fristRectWidth = this.defaultSize[1];
-    const classNameRectangle = new Path.Rectangle(
-      firstRectX,
-      firstRectY,
-      fristRectWidth,
-      firstRectHeight
-    );
-    this.setStrokeAndFill(classNameRectangle);
-    groupClass.addChild(classNameRectangle);
-
-    //create varaible rectangle
-    const secRectX = firstRectX;
-    const secRectY = firstRectY + firstRectHeight;
-    const secRectHeight = 50;
-    const secRectWidth = this.defaultSize[1];
-    const variableNameRectangle = new Path.Rectangle(
-      secRectX,
-      secRectY,
-      secRectWidth,
-      secRectHeight
-    );
-    this.setStrokeAndFill(variableNameRectangle);
-    groupClass.addChild(variableNameRectangle);
-
-    //create method rectangle
-    const thirdRectX = firstRectX;
-    const thirdRectY = secRectY + secRectHeight;
-    const thirdRectHeight = 30;
-    const thirdRectWidth = this.defaultSize[1];
-    const methodNameRectangle = new Path.Rectangle(
-      thirdRectX,
-      thirdRectY,
-      thirdRectWidth,
-      thirdRectHeight
-    );
-    this.setStrokeAndFill(methodNameRectangle);
-    groupClass.addChild(methodNameRectangle);
   }
 
   // adds text to the clicked area
@@ -279,7 +146,6 @@ class DrawCanvas {
     return textShape;
   }
 
-  //add Object/Interface shape
   drawObjectShape(type) {
     //creates object rectangle
     const startPoint = new Point(
@@ -302,158 +168,6 @@ class DrawCanvas {
       );
       const textShape = this.drawTextShape(textShapeStartPoint, type);
     }
-  }
-
-  //add Usecase/Activity shape
-  drawUseCaseShape(type) {
-    //draw circle
-    let circlePath = new Path.Circle(this.centerPosition, 25);
-    circlePath.scale(2, 1.2);
-
-    //scale to make it an oval
-    this.setStrokeAndFill(circlePath);
-
-    if (type === SHAPES.USECASE) {
-      //add Text
-      const textShape = this.drawTextShape(
-        new Point(this.centerPosition.x - 25, this.centerPosition.y + 5),
-        type
-      );
-    }
-  }
-
-  //add Component shape
-  drawComponentShape() {
-    //draw main rectangle
-    const startPoint = new Point(
-      this.centerPosition.x - 50,
-      this.centerPosition.y - 25
-    );
-    const rectangle = new Path.Rectangle(
-      startPoint.x,
-      startPoint.y,
-      this.defaultSize[0] + 20,
-      this.defaultSize[0] - 45
-    );
-    this.setStrokeAndFill(rectangle);
-
-    // draw sub part of the shape
-    const subRect = new Path.Rectangle(
-      rectangle.bounds.topRight.x - 25,
-      startPoint.y + 6,
-      20,
-      25
-    );
-    this.setStrokeAndFill(subRect);
-    subRect.strokeWidth = 2 / this.strokeWidth;
-
-    //draw two sub rec
-    const subRect1 = new Path.Rectangle(
-      rectangle.bounds.topRight.x - 28,
-      startPoint.y + 9,
-      7,
-      7
-    );
-    this.setStrokeAndFill(subRect1);
-    subRect1.strokeWidth = 2 / this.strokeWidth;
-
-    const subRect2 = new Path.Rectangle(
-      rectangle.bounds.topRight.x - 28,
-      startPoint.y + 20,
-      7,
-      7
-    );
-    this.setStrokeAndFill(subRect2);
-    subRect2.strokeWidth = 2 / this.strokeWidth;
-
-    //create group and add shapes
-    let group = new Group();
-
-    group.addChild(rectangle);
-    group.addChild(subRect);
-    group.addChild(subRect1);
-    group.addChild(subRect2);
-
-    //add text to shape
-    const textShape = this.drawTextShape(
-      new Point(this.centerPosition.x - 25, this.centerPosition.y + 8),
-      SHAPES.COMPONENT
-    );
-  }
-
-  //add module shape
-  drawModuleShape() {
-    // draw main rect
-    const rectangle = new Path.Rectangle(
-      this.centerPosition.x - 50,
-      this.centerPosition.y - 50,
-      this.defaultSize[0] + 20,
-      this.defaultSize[0] - 40
-    );
-    this.setStrokeAndFill(rectangle);
-
-    //draw two sub rec
-    const subRect1 = new Path.Rectangle(
-      rectangle.bounds.topLeft.x - 7,
-      rectangle.bounds.topLeft.y + 12,
-      15,
-      12
-    );
-    this.setStrokeAndFill(subRect1);
-
-    const subRect2 = new Path.Rectangle(
-      rectangle.bounds.topLeft.x - 7,
-      rectangle.bounds.topLeft.y + 35,
-      15,
-      12
-    );
-    this.setStrokeAndFill(subRect2);
-
-    //create group and add shapes
-    let group = new Group();
-
-    group.addChild(rectangle);
-    group.addChild(subRect1);
-    group.addChild(subRect2);
-
-    //add text to shape
-    const textShape = this.drawTextShape(
-      new Point(this.centerPosition.x - 10, this.centerPosition.y - 15),
-      SHAPES.MODULE
-    );
-  }
-
-  //add activity shape
-  drawActivityShape() {
-    //create rounded shape rectangle
-    const rectangle = new Rectangle(
-      this.centerPosition.subtract(50),
-      new Point(this.centerPosition.x + 70, this.centerPosition.y)
-    );
-    const radius = new Size(30, 30);
-    const path = new Path.Rectangle(rectangle, radius);
-    this.setStrokeAndFill(path);
-
-    //add text to shape
-    const textShape = this.drawTextShape(
-      new Point(this.centerPosition.x - 10, this.centerPosition.y - 20),
-      SHAPES.ACTIVITY
-    );
-  }
-
-  //add decision shape
-  drawDecisionShape() {
-    //create rectangle
-    const rectangle = new Path.Rectangle(
-      this.centerPosition.x - 20,
-      this.centerPosition.y - 20,
-      this.defaultSize[0] / 2.5,
-      this.defaultSize[0] / 2.5
-    );
-    this.setStrokeAndFill(rectangle);
-
-    //rotate
-    rectangle.rotate(45);
   }
 
   //on tool click
@@ -503,51 +217,6 @@ class DrawCanvas {
         this.currentActiveItem.data.state = "resize";
       }
     }
-  }
-
-  //draw actor shape
-  drawActorShape() {
-    //draw actor head
-    const head = new Path.Circle(
-      new Point(this.centerPosition.x, this.centerPosition.y - 50),
-      7
-    );
-    this.setStrokeAndFill(head);
-
-    //draw actor body
-    const body = new Path.Line(
-      new Point(this.centerPosition.x, this.centerPosition.y - 43),
-      new Point(this.centerPosition.x, this.centerPosition.y - 10)
-    );
-    this.setStrokeAndFill(body);
-
-    //draw actor arms
-    const arms = new Path.Line(
-      new Point(this.centerPosition.x - 20, this.centerPosition.y - 38),
-      new Point(this.centerPosition.x + 20, this.centerPosition.y - 38)
-    );
-    this.setStrokeAndFill(arms);
-
-    //draw feet
-    const leftFeet = new Path.Line(
-      new Point(this.centerPosition.x - 20, this.centerPosition.y + 5),
-      new Point(this.centerPosition.x, this.centerPosition.y - 10)
-    );
-    this.setStrokeAndFill(leftFeet);
-
-    const rightFeet = new Path.Line(
-      new Point(this.centerPosition.x, this.centerPosition.y - 10),
-      new Point(this.centerPosition.x + 20, this.centerPosition.y + 5)
-    );
-    this.setStrokeAndFill(rightFeet);
-
-    //add shapes to group to make full actor
-    let group = new Group();
-    group.addChild(head);
-    group.addChild(body);
-    group.addChild(arms);
-    group.addChild(leftFeet);
-    group.addChild(rightFeet);
   }
 
   //item drag listener
@@ -677,49 +346,6 @@ class DrawCanvas {
     return mainGroup;
   }
 
-  //add Object/Interface shape
-  drawObjectShape(type) {
-    //creates object rectangle
-    const startPoint = new Point(
-      this.centerPosition.x - 50,
-      this.centerPosition.y - 25
-    );
-    const rectangle = new Path.Rectangle(
-      startPoint.x,
-      startPoint.y,
-      this.defaultSize[0],
-      this.defaultSize[0] / 2
-    );
-    this.setStrokeAndFill(rectangle);
-
-    //create textshape
-    if (type !== SHAPES.SQUARE) {
-      const textShapeStartPoint = new Point(
-        startPoint.x + 30,
-        startPoint.y + 30
-      );
-      const textShape = this.drawTextShape(textShapeStartPoint, type);
-    }
-  }
-
-  //add Usecase/Activity shape
-  drawUseCaseShape(type) {
-    //draw circle
-    let circlePath = new Path.Circle(this.centerPosition, 25);
-    circlePath.scale(2, 1.2);
-
-    //scale to make it an oval
-    this.setStrokeAndFill(circlePath);
-
-    if (type === SHAPES.USECASE) {
-      //add Text
-      const textShape = this.drawTextShape(
-        new Point(this.centerPosition.x - 25, this.centerPosition.y + 5),
-        type
-      );
-    }
-  }
-
   reRenderLine(headPosition) {
     const lineStartPoint = this.currentActiveItem.firstChild.firstChild
       .segments[0].point;
@@ -838,7 +464,6 @@ class DrawCanvas {
     this.currentActiveItem.position = position;
   }
 
-  //----------------------- general methods --------------------------------------
   // return center position of canvas
   getCenterPosition() {
     return new Point({
