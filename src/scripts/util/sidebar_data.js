@@ -71,18 +71,18 @@ const sidebarData = [
         name: SHAPES.STAIRS,
         uri: "./src/images/stairs.svg",
       },
-      {
-        name: SHAPES.COMPONENT,
-        uri: "./src/images/component.svg",
-      },
-      {
-        name: SHAPES.ACTIVITY,
-        uri: "./src/images/activity.svg",
-      },
-      {
-        name: SHAPES.DECISION,
-        uri: "./src/images/decision.svg",
-      },
+    //   {
+    //     name: SHAPES.COMPONENT,
+    //     uri: "./src/images/component.svg",
+    //   },
+    //   {
+    //     name: SHAPES.ACTIVITY,
+    //     uri: "./src/images/activity.svg",
+    //   },
+    //   {
+    //     name: SHAPES.DECISION,
+    //     uri: "./src/images/decision.svg",
+    //   },
     ],
   },
 ];
