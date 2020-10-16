@@ -10,8 +10,9 @@ import paper, {
   Point,
   Size,
 } from "paper";
+import { getAngle } from "../util/get_angle";
+
 import Modal from "../modal/modal";
-import { getAngleDeg } from "../util/util";
 
 const boundsIdentifierObj = {
   1: "topLeft",
@@ -86,7 +87,7 @@ class DrawCanvas {
     this.canvasElement.addEventListener("dblclick", this.onToolDoubleClick);
 
     //set right menu liteners
-    this.setMenuClickListener = this.setMenuClickListener.bind(this);
+    // this.setMenuClickListener = this.setMenuClickListener.bind(this);
 
     //line attachement function binding
     this.checkLineAttachment = this.checkLineAttachment.bind(this);
@@ -94,7 +95,7 @@ class DrawCanvas {
     //line render function
     this.reRenderLine = this.reRenderLine.bind(this);
 
-    this.setMenuClickListener();
+    // this.setMenuClickListener();
   }
 
   //set input to open file picker dialog
@@ -590,6 +591,132 @@ class DrawCanvas {
         );
       }
       this.currentActiveItem.bounds.selected = true;
+    }
+  }
+
+  drawLineShape(startPoint, endPoint, lineType) {
+    let mainGroup = new Group();
+    let group = new Group();
+
+    //draw line
+    const line = new Path.Line(startPoint, endPoint);
+    this.setStrokeAndFill(line);
+
+    // draw head circle
+    const headCircle = new Path.Circle(endPoint, 5);
+    headCircle.fillColor = "black";
+    headCircle.strokeWidth = 1;
+
+    //draw middle circle
+    const midPoint = new Point(
+      (startPoint.x + endPoint.x) / 2,
+      (startPoint.y + endPoint.y) / 2
+    );
+    const midCircle = new Path.Circle(midPoint, 4);
+    midCircle.fillColor = "black";
+    midCircle.strokeWidth = 1;
+
+    //draw tail circle
+    const tailCircle = new Path.Circle(startPoint, 5);
+    tailCircle.fillColor = "black";
+    tailCircle.strokeWidth = 1;
+
+    //add circles and line to group
+    group.addChild(line);
+    group.addChild(tailCircle);
+    group.addChild(midCircle);
+    group.addChild(headCircle);
+
+    //draw arrow shape
+    const headShape = new Path();
+    headShape.strokeColor = this.strokeColor;
+    headShape.strokeWidth = this.strokeWidth;
+
+    let arrowCenter = endPoint;
+
+    //based on line type draw shape
+    if (lineType !== SHAPES.DIVIDER) {
+      const leftEdge = new Point(arrowCenter.x - 10, arrowCenter.y - 10);
+      const rightEdge = new Point(arrowCenter.x - 10, arrowCenter.y + 10);
+      headShape.add(leftEdge);
+      headShape.add(arrowCenter);
+      headShape.add(rightEdge);
+
+      if (lineType === SHAPES.AGGREGATION || lineType === SHAPES.COMPOSITION) {
+        const bottomRightEdge = new Point(arrowCenter.x - 20, arrowCenter.y);
+        const bottomLeftEdge = leftEdge;
+        headShape.add(bottomRightEdge);
+        headShape.add(bottomLeftEdge);
+
+        if (lineType === SHAPES.AGGREGATION) {
+          headShape.strokeColor = "white";
+          headShape.fillColor = "white";
+          headShape.shadowColor = "gray";
+          headShape.shadowOffset = 1;
+        }
+
+        if (lineType === SHAPES.COMPOSITION) {
+          headShape.fillColor = "black";
+        }
+      }
+    }
+
+    //rotate the head shape
+    if (lineType !== SHAPES.DIVIDER)
+      headShape.rotate(
+        getAngle(endPoint.x, endPoint.y, startPoint.x, startPoint.y),
+        arrowCenter
+      );
+
+    //add group to main group
+    mainGroup.addChild(group);
+    if (lineType !== SHAPES.DIVIDER) mainGroup.addChild(headShape);
+    mainGroup.data.type = LINE;
+    mainGroup.data.lineType = lineType;
+    mainGroup.data.lineId = Date.now();
+    return mainGroup;
+  }
+
+  //add Object/Interface shape
+  drawObjectShape(type) {
+    //creates object rectangle
+    const startPoint = new Point(
+      this.centerPosition.x - 50,
+      this.centerPosition.y - 25
+    );
+    const rectangle = new Path.Rectangle(
+      startPoint.x,
+      startPoint.y,
+      this.defaultSize[0],
+      this.defaultSize[0] / 2
+    );
+    this.setStrokeAndFill(rectangle);
+
+    //create textshape
+    if (type !== SHAPES.SQUARE) {
+      const textShapeStartPoint = new Point(
+        startPoint.x + 30,
+        startPoint.y + 30
+      );
+      const textShape = this.drawTextShape(textShapeStartPoint, type);
+    }
+  }
+
+  //add Usecase/Activity shape
+  drawUseCaseShape(type) {
+    //draw circle
+    let circlePath = new Path.Circle(this.centerPosition, 25);
+    circlePath.scale(2, 1.2);
+
+    //scale to make it an oval
+    this.setStrokeAndFill(circlePath);
+
+    if (type === SHAPES.USECASE) {
+      //add Text
+      const textShape = this.drawTextShape(
+        new Point(this.centerPosition.x - 25, this.centerPosition.y + 5),
+        type
+      );
     }
   }
 
