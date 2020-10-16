@@ -1,0 +1,11 @@
+<svg width="179" height="64" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <g>
+  <title>Layer 1</title>
+  <path id="svg_2" d="m89.749985,0.786746l44.000013,0l0,0c24.30054,0 44.000013,13.879171 44.000013,30.999998c0,17.120829 -19.699473,30.999998 -44.000013,30.999998l-44.000013,0l0,-61.999996z" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <path transform="rotate(-180 44.75,31.7867431640625) " id="svg_3" d="m0.749985,0.786746l44.000012,0l0,0c24.30054,0 44.000013,13.879171 44.000013,30.999998c0,17.120829 -19.699473,30.999998 -44.000013,30.999998l-44.000012,0l0,-61.999996z" fill-opacity="null" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="#fff"/>
+  <line stroke-linecap="null" stroke-linejoin="null" id="svg_4" y2="60.750006" x2="89.487518" y1="0.750006" x1="89.487518" stroke-opacity="null" stroke-width="1.5" stroke="#000" fill="none"/>
+  <rect stroke="#000" id="svg_6" height="60.999999" width="39" y="0.750007" x="67.487518" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="#fff"/>
+  <text xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_7" y="38.750006" x="51.487518" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#000000">Activity</text>
+ </g>
+</svg>

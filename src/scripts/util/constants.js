@@ -16,5 +16,11 @@ export const SHAPES = {
   LOVESEAT: "LOVE SEAT",
   COFFEETABLE: "COFFEE TABLE",
   FIREPLACE: "FIREPLACE",
-  STAIRS: "STAIRS"
+  STAIRS: "STAIRS",
+  COMPONENT: "Component",
+  MODULE: "Module",
+  TITLE: "Title",
+  ACTIVITY: "Activity",
+  USECASE: "Use Case",
+  DECISION: "Decision",
 };

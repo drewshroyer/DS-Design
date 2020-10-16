@@ -12,9 +12,9 @@ const sidebarData = [
         name: SHAPES.TWIN,
         uri: "./src/images/twin-bed.svg",
       },
-    // ],
-    // categoryName: "General Purpose",
-    // shapes: [
+      // ],
+      // categoryName: "General Purpose",
+      // shapes: [
       {
         name: SHAPES.ARMCHAIR,
         uri: "./src/images/arm-chair.svg",
@@ -70,6 +70,18 @@ const sidebarData = [
       {
         name: SHAPES.STAIRS,
         uri: "./src/images/stairs.svg",
+      },
+      {
+        name: SHAPES.COMPONENT,
+        uri: "./src/images/component.svg",
+      },
+      {
+        name: SHAPES.ACTIVITY,
+        uri: "./src/images/activity.svg",
+      },
+      {
+        name: SHAPES.DECISION,
+        uri: "./src/images/decision.svg",
       },
     ],
   },
