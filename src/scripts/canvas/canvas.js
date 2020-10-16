@@ -96,6 +96,8 @@ class DrawCanvas {
       case SHAPES.OFFICE:
       case SHAPES.ENDTABLE:
       case SHAPES.RUG:
+          this.drawRug();
+          break;
       case SHAPES.ROUNDTABLE:
       case SHAPES.TVCABINENT:
       case SHAPES.ROUNDRUG:
@@ -125,6 +127,15 @@ class DrawCanvas {
         break;
     }
   }
+
+
+  drawRug() {
+    rug = new Image();
+    rug.src = "../../images/rug.svg";
+    rug.onload = function () {
+      context.drawImage(rug, 0, 0);
+    };
+}
 
   // adds text to the clicked area
   drawTextShape(position, text) {
