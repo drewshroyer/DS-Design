@@ -43,10 +43,10 @@ class MenuOptions {
     if (this.project.activeLayer.children.length == 0) return;
     const fileName = `RoomPlan_${Date.now()}.svg`;
 
-    var url =
+    let url =
       "data:image/svg+xml;utf8," +
       encodeURIComponent(this.project.exportSVG({ asString: true }));
-    var downloadLinkElement = document.createElement("a");
+    let downloadLinkElement = document.createElement("a");
     downloadLinkElement.download = fileName;
     downloadLinkElement.href = url;
     downloadLinkElement.click();
