@@ -1,6 +1,6 @@
 # AD-Design
 
-Based off the styling of Architectual Digest, this room planner will be an extension of the brand but allow user's to upload the dimensions of a  paticular room or space. From there, using preloaded drawings of tables, chairs, beds, benches, rugs, you name it, users will be able to layout their space to see the way that pieces of furniture fit inside a space. 
+Based off the styling of Architectural Digest, this room planner allow user's to upload the dimensions of a paticular room or space to begin planning their dream rooms. From there, using preloaded drawings of tables, chairs, beds, benches, rugs, etc, users will be able to layout their space to see the way that pieces of furniture fit inside it. 
 
 This modern and minimal app will serve as a tool for room planning and can be fully customizable based on a user's needs. 
 
@@ -12,13 +12,7 @@ MVP:
 
 WIREFRAMES: https://wireframe.cc/pro/pp/77f2e95fe382351
 
-Bonus objectives:
-1. Create preloaded rooms and stlyes so a user can view the layouts of famous apartments, whether it be Don Draper or Carrie Bradshaw, that a user could then customize to their liking. 
-2. Allow users to add colors and patterns to objects in their spaces. 
-3. Include a Yelp API for local furniture stores in their area. 
-
-
-Projected Technologies: 
+Used Technologies: 
 HTML5
 SCSS
 JavaScript
