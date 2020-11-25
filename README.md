@@ -13,9 +13,9 @@ MVP:
 WIREFRAME: https://wireframe.cc/pro/pp/77f2e95fe382351
 
 Used Technologies: 
-HTML5
-SCSS
-JavaScript
-Paper.js
-Webpack
-myCanvas
+* HTML5
+* SCSS
+* JavaScript
+* Paper.js
+* Webpack
+* myCanvas
