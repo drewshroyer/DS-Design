@@ -10,7 +10,7 @@ MVP:
 3. Thursday 10/15 - OBJECTS - Be able to add basic furntiture objects indcluding: Rug, Couch, Dining Chair, Dining Table, Coffee Table, Side Table, Lounge Chair
 4. Friday 10/16 - FINISHING TOUCHES 
 
-WIREFRAMES: https://wireframe.cc/pro/pp/77f2e95fe382351
+WIREFRAME: https://wireframe.cc/pro/pp/77f2e95fe382351
 
 Used Technologies: 
 HTML5
