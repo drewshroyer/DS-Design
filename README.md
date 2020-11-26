@@ -1,6 +1,6 @@
 # AD-Design
 
-Based off the styling of Architectural Digest, this room planner allow user's to upload the dimensions of a paticular room or space to begin planning their dream rooms. From there, using preloaded drawings of tables, chairs, beds, benches, rugs, etc, users will be able to layout their space to see the way that pieces of furniture fit inside it. 
+Based off the styling of Architectural Digest, the AD Design room planner allow user's to upload the dimensions of a paticular room or space to begin planning their dream home. From there, using preloaded drawings of tables, chairs, beds, benches, rugs, etc, users will be able to layout their space to see the way that pieces of furniture fit inside it. This Javascript application is built using Javascript, Canvas, HTML5 and CSS3.
 
 This modern and minimal app will serve as a tool for room planning and can be fully customizable based on a user's needs. 
 
