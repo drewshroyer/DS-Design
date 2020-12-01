@@ -2,7 +2,7 @@ import { SHAPES } from "./constants";
 
 const sidebarData = [
   {
-    categoryName: "General Purpose",
+    categoryName: "Furniture",
     shapes: [
       {
         name: SHAPES.QUEEN,
@@ -12,9 +12,6 @@ const sidebarData = [
         name: SHAPES.TWIN,
         uri: "./src/images/twin-bed.svg",
       },
-      // ],
-      // categoryName: "General Purpose",
-      // shapes: [
       {
         name: SHAPES.ARMCHAIR,
         uri: "./src/images/arm-chair.svg",
