@@ -201,14 +201,15 @@ h2:hover {
 
 .height-width-modal {
     font-size: 24px;
-    padding: 20px;
+    padding: 10px;
 }
 
 .input-container-modal-form {
+    width: 128px;
     text-align: right;
-    padding: 15px 6px 0px 70px;
-    margin-left: 15px;
-    font-size: 18px;
+    padding: 15px 0px 0px 0px;
+    margin-left: 20px;
+    font-size: 14px;
     border: none;
     border-bottom: 2px solid black;
 }
@@ -254,7 +255,7 @@ h2:hover {
 }
 
 .sidebar-category-title {
-    width: calc(20% - 20px);
+    width: 19.4%;
     position: fixed;
     font-size: 16px;
     background-color: #dddddd;

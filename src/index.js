@@ -21,32 +21,32 @@ window.addEventListener("DOMContentLoaded", (main) => {
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
 
-  let painting = false;
+  // let painting = false;
 
-  function startPosition() {
-    painting = true;
-  }
+  // function startPosition() {
+  //   painting = true;
+  // }
 
-  function finishPosition() {
-    painting = false;
-    ctx.beginPath();
-  }
+  // function finishPosition() {
+  //   painting = false;
+  //   ctx.beginPath();
+  // }
 
-  function scribble(e) {
-    if (!painting) return;
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "blue";
+  // function scribble(e) {
+  //   if (!painting) return;
+  //   ctx.lineWidth = 2;
+  //   ctx.lineCap = "round";
+  //   ctx.strokeStyle = "blue";
 
-    ctx.lineTo(e.clientX, e.clientY);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(e.clientX, e.clientY);
-  }
+  //   ctx.lineTo(e.clientX, e.clientY);
+  //   ctx.stroke();
+  //   ctx.beginPath();
+  //   ctx.moveTo(e.clientX, e.clientY);
+  // }
 
-  canvas.addEventListener("mousedown", startPosition);
-  canvas.addEventListener("mouseup", finishPosition);
-  canvas.addEventListener("mousemove", scribble);
+  // canvas.addEventListener("mousedown", startPosition);
+  // canvas.addEventListener("mouseup", finishPosition);
+  // canvas.addEventListener("mousemove", scribble);
 
 //    const canvas = document.getElementById("canvas");
 //    const ctx = canvas.getContext("2d");
@@ -77,10 +77,13 @@ window.addEventListener("DOMContentLoaded", (main) => {
    startPlanningButton.addEventListener("click", function defineRoom(event) {
      event.preventDefault();
      let startPlanning = document.getElementById("submit-dimension-button");
-     let height = document.getElementById("height-input").value * 5;
-     let width = document.getElementById("width-input").value * 5;
-    //  const canvas = document.getElementById("canvas");
-    //  const ctx = drawCanvas.getContext("2d");
+     let feetHeight = document.getElementById("height-input-feet").value;
+     let inchesHeight = document.getElementById("height-input-inches").value;
+     let height = ((feetHeight * 12) + inchesHeight) * .5;
+     let feetWidth = document.getElementById("width-input-feet").value;
+     let inchesWidth = document.getElementById("width-input-inches").value;
+     let width = ((feetWidth * 12) + inchesWidth) * .6;
+    
      ctx.strokeStyle = "black";
      ctx.lineWidth = 5;
      ctx.strokeRect(80, 80, width, height);
