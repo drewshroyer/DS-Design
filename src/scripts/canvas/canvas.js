@@ -110,7 +110,7 @@ class DrawCanvas {
     rug.src = "../../images/rug.svg";
     rug.onload = function () {
       context.drawImage(rug, 0, 0);
-    };
+  };
 
 }
 

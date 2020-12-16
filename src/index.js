@@ -13,11 +13,29 @@ window.addEventListener("DOMContentLoaded", (main) => {
   const sidebar = new Sidebar(
     sidebarData[0],
     sidebarElement,
-    drawCanvas.drawShapes
   );
 
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   // let painting = false;
   // function startPosition() {
