@@ -1,6 +1,6 @@
 # AD-Design
 
-Based off the styling of Architectual Digest, this room planner will be an extension of the brand but allow user's to upload the dimensions of a  paticular room or space. From there, using preloaded drawings of tables, chairs, beds, benches, rugs, you name it, users will be able to layout their space to see the way that pieces of furniture fit inside a space. 
+Based off the styling of Architectural Digest, the AD Design room planner allow user's to upload the dimensions of a paticular room or space to begin planning their dream home. From there, using preloaded drawings of tables, chairs, beds, benches, rugs, etc, users will be able to layout their space to see the way that pieces of furniture fit inside it. This Javascript application is built using Javascript, Canvas, HTML5 and CSS3.
 
 This modern and minimal app will serve as a tool for room planning and can be fully customizable based on a user's needs. 
 
@@ -10,18 +10,12 @@ MVP:
 3. Thursday 10/15 - OBJECTS - Be able to add basic furntiture objects indcluding: Rug, Couch, Dining Chair, Dining Table, Coffee Table, Side Table, Lounge Chair
 4. Friday 10/16 - FINISHING TOUCHES 
 
-WIREFRAMES: https://wireframe.cc/pro/pp/77f2e95fe382351
+WIREFRAME: https://wireframe.cc/pro/pp/77f2e95fe382351
 
-Bonus objectives:
-1. Create preloaded rooms and stlyes so a user can view the layouts of famous apartments, whether it be Don Draper or Carrie Bradshaw, that a user could then customize to their liking. 
-2. Allow users to add colors and patterns to objects in their spaces. 
-3. Include a Yelp API for local furniture stores in their area. 
-
-
-Projected Technologies: 
-HTML5
-SCSS
-JavaScript
-Paper.js
-Webpack
-myCanvas
+Used Technologies: 
+* HTML5
+* SCSS
+* JavaScript
+* Paper.js
+* Webpack
+* myCanvas
