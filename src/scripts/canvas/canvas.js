@@ -1,6 +1,7 @@
 import { SHAPES } from "../util/constants";
-import paper, { Project, Path, Group, PointText, tool, Tool, Rectangle, Point, Size } from 'paper';
+import paper, { Project, tool, Tool, Rectangle, Point } from 'paper';
 import Konva from 'konva';
+import { Group, Layer, Stage, Circle } from 'konva';
 
 const boundsIdentifierObj = {
   1: 'topLeft', 2: 'topRight', 3: 'bottomRight', 0: 'bottomLeft'
@@ -23,21 +24,18 @@ class MyCanvas {
 
     // sets up paper js on canvas
     paper.setup(canvasElement);
-
     //creates new project in paper
     this.project = new Project(canvasElement)
-
     //canvas scale value
     this.canvasScaleValue = 1;
-
     //creating tool
     this.tool = new Tool();
     // has moved at least 10 points:
     tool.minDistance = 2;
 
+
     //shapes method binding
     this.drawShapes = this.drawShapes.bind(this);
-
     // furniture elements binding
     this.drawQueen = this.drawQueen.bind(this);
     this.drawTwin = this.drawTwin.bind(this);
@@ -61,18 +59,6 @@ class MyCanvas {
     // anchor binding
     this.addAnchor = this.addAnchor.bind(this);
     this.update = this.update.bind(this);
-    //user interaction method binding
-    // this.onToolDoubleClick = this.onToolDoubleClick.bind(this);
-    // this.onToolMouseDown = this.onToolMouseDown.bind(this);
-    // this.setOneItemSelected = this.setOneItemSelected.bind(this);
-    // this.onToolDrag = this.onToolDrag.bind(this);
-    // this.onToolKeyDown = this.onToolKeyDown.bind(this);
-
-    //tool level clicklistener
-    // this.tool.onMouseDown = this.onToolMouseDown;
-    // this.tool.onMouseUp = this.onToolMouseUp;
-    // this.tool.onMouseDrag = this.onToolDrag;
-    // this.tool.onKeyDown = this.onToolKeyDown;
 
      //add double click listener on canvas because tool have no double click listener
     this.canvasElement.addEventListener("dblclick", this.onToolDoubleClick);
@@ -115,18 +101,6 @@ class MyCanvas {
     downloadLinkElement.click();
  }
 
-
- //set bring to front listener for items
- bringToFront(){
-  this.currentActiveItem.bringToFront();
- }
-
- //set move to back listener for items
- moveToBack(){
-  this.currentActiveItem.sendToBack();
- }
-
-  //shape draw distributor
   drawShapes(shapeName){
 
     switch (shapeName) {
@@ -322,33 +296,39 @@ class MyCanvas {
     let stairImg = new Image();
     const canvasElement = document.getElementById('myCanvas');
     const ctx = canvasElement.getContext("2d");
+    stairImg.src = "src/images/stairs.svg";
+    this.createAnchors(stairImg);
+    
     stairImg.onload = function() {
       ctx.drawImage(stairImg, 300, 200);
     }
-    stairImg.src = "src/images/stairs.svg";
+    // debugger
+  }
 
-    let stairsGroup = new Konva.Group({
+  createAnchors(image) {
+    debugger
+    let group = new Group({
         x: 300,
         y: 200,
         draggable: true,
       });
-      let stairLayer = new Konva.Layer();
 
-      let stage = new Konva.Stage({
+      let layer = new Layer();
+      debugger
+      let stage = new Stage({
         container: 'myCanvas',
         width: 138,
         height: 200,
       });
-
-      stage.add(stairLayer);
-      stairLayer.add(stairsGroup);
-      stairsGroup.add(stairImg);
-      addAnchor(stairsGroup, 0, 0, 'topLeft');
-      addAnchor(stairsGroup, 138, 0, 'topRight');
-      addAnchor(stairsGroup, 138, 200, 'bottomRight');
-      addAnchor(stairsGroup, 0, 200, 'bottomLeft');
+      debugger
+      stage.add(layer);
+      layer.add(group);
+      group.add(image);
+      addAnchor(group, 0, 0, 'topLeft');
+      addAnchor(group, 138, 0, 'topRight');
+      addAnchor(group, 138, 200, 'bottomRight');
+      addAnchor(group, 0, 200, 'bottomLeft');
   }
-
   
       update(activeAnchor) {
         let group = activeAnchor.getParent();
@@ -381,7 +361,6 @@ class MyCanvas {
             topLeft.x(anchorX);
             break;
         }
-
         image.position(topLeft.position());
 
         let width = topRight.getX() - topLeft.getX();
@@ -395,11 +374,11 @@ class MyCanvas {
       addAnchor(group, x, y, name) {
         let stage = group.getStage();
         let layer = group.getLayer();
-        let anchor = new Konva.Circle({
+        let anchor = new Circle({
           x: x,
           y: y,
           stroke: '#000',
-          fill: '#ddd',
+          fill: 'blue',
           strokeWidth: 1,
           radius: 2,
           name: name,
@@ -433,154 +412,9 @@ class MyCanvas {
           this.strokeWidth(2);
           layer.draw();
         });
-
         group.add(anchor);
       }
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //on tool click
-  onToolMouseDown(e){
-    //toggle item selected
-    this.setOneItemSelected(e);
-
-    //return if no currentActiveItem
-    if(!this.currentActiveItem) return;
-
-    //clearing currentActiveItem data to fix the issue of unintended moves
-    this.currentActiveItem.data.state = null;
-
-    if(this.currentActiveItem.contains(e.point)){
-      this.currentActiveItem.data.state = 'move'
-    }
-    //set items data based on item mouseDown point
-    if(this.currentActiveItem.data.type !== LINE){
-      if(this.currentActiveItem.hitTest(e.point, {bounds: true, tolerance: 5})){
-        //get bounds of the shape
-        const bounds = this.currentActiveItem.bounds;
-
-        //itrating to find the exact bound point
-        for(let[key, value] of Object.entries(boundsIdentifierObj)){
-          if(bounds[value].isClose(e.point, 5)){
-            const oppositeBound = bounds[boundsIdentifierObj[(parseInt(key) + 2) % 4]];
-            //get opposite bound point
-            const oppositePoint = new Point(oppositeBound.x,oppositeBound.y);
-            //get current bound point
-            const centerPoint = new Point(bounds[value].x, bounds[value].y);
-
-            //set shape data to be used for resizing later
-            this.currentActiveItem.data.state = 'resize'
-            this.currentActiveItem.data.from = oppositePoint;
-            this.currentActiveItem.data.to = centerPoint;
-            break;
-          }
-        }
-      }
-    } else {
-      //only for shapes with type LINE
-      const headCircleItem = this.currentActiveItem.firstChild.children[3];
-      if(headCircleItem.contains(e.point)){
-        this.currentActiveItem.data.state = 'resize'
-      }
-    }
-  }
-
-  //item drag listener
-  onToolDrag(e){
-    // debugger
-    if(this.currentActiveItem == null) return;
-
-    if(this.currentActiveItem.data.state === 'move'){
-      this.currentActiveItem.position = e.point;  
-    }
-    if(this.currentActiveItem.data.state === 'resize'){
-        //shapes other than line, updating the bounds
-        this.currentActiveItem.bounds = new Rectangle(
-          this.currentActiveItem.data.from,e.point);
-      this.currentActiveItem.bounds.selected = true
-    } 
-  }
-  // attach line to shapes
   
-  //on tool double click
-  onToolDoubleClick(e){
-    if(e.ctrlKey) {
-      this.drawTextShape({x: e.layerX, y: e.layerY}, "Add Text");
-    }
-  }
-
-  
-
-  // //toggle item selecteion and saving currentActiveItem
-  // setOneItemSelected(e){
-  //   const position = e.point;
-  //   let clickedItems = []
-  //   this.project.activeLayer.children.forEach(child=>{
-  //     if(child.contains(position)){
-  //       clickedItems.push(child);
-  //     } else {
-  //       child.bounds.selected = false;
-  //     }
-  //   })
-  //   //return if no item is selected
-  //   if(clickedItems.length === 0) return;
-
-  //   //select the clicked item
-  //   let latestItem = clickedItems[0];
-  //   for (let i = 0; i < clickedItems.length; i++) {
-  //     if(latestItem.id < clickedItems[i].id){
-  //       latestItem = clickedItems[i];
-  //     }else
-  //     {
-  //       clickedItems[i].bounds.selected = false;
-  //     }
-  //   }
-  //   this.currentActiveItem = latestItem;
-  //   latestItem.bounds.selected = true;
-  // }
-
-
-  // keyboard intraction to move shapes
-  // onToolKeyDown(e){
-  //   if(!this.currentActiveItem) return;
-
-  //   const position = this.currentActiveItem.position;
-  //   const step = 5;
-  //   switch(e.key){
-  //     case 'left':
-  //       position.x -= step;
-  //       break;
-  //     case 'right':
-  //       position.x += step;
-  //       break;
-  //     case 'up':
-  //       position.y -= step;
-  //       break;
-  //     case 'down':
-  //       position.y += step;
-  //       break; 
-  //     case 'delete':
-  //       this.currentActiveItem.remove();
-  //       break;
-  //   }
-  //   this.currentActiveItem.position = position;
-  // }
-
-
   //----------------------- general methods --------------------------------------
   // return center position of canvas
   getCenterPosition(){

@@ -48,6 +48,7 @@ window.addEventListener("DOMContentLoaded", (main) => {
      let startPlanning = document.getElementById("submit-dimension-button");
      let feetHeight = document.getElementById("height-input-feet").value;
      let inchesHeight = document.getElementById("height-input-inches").value;
+     debugger
      let height = ((feetHeight * 12) + inchesHeight) * .5;
      let feetWidth = document.getElementById("width-input-feet").value;
      let inchesWidth = document.getElementById("width-input-inches").value;
@@ -56,7 +57,12 @@ window.addEventListener("DOMContentLoaded", (main) => {
      ctx.strokeStyle = "black";
      ctx.lineWidth = 5;
      ctx.strokeRect(80, 80, width, height);
+
+     ctx.font = "18px Lato";
+     ctx.fillText(feetHeight+"'"+inchesHeight+"''", 60+(width/2), 70);
+     ctx.fillText(feetWidth+"'"+inchesWidth+"''", 20, 60+(height/2));
      modal.style.display = "none";
+
    })
 });
 
