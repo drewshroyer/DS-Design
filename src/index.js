@@ -1,23 +1,23 @@
 import "./styles/index.scss";
 import Sidebar from "./scripts/sidebar/sidebar";
 import sidebarData from "./scripts/util/sidebar_data";
-import DrawCanvas from "./scripts/canvas/canvas";
+import MyCanvas from "./scripts/canvas/canvas";
 
 window.addEventListener("DOMContentLoaded", (main) => {
 
-  const canvas = document.getElementById("drawCanvas");
-  const drawCanvas = new DrawCanvas(canvas);
-  const ctx = canvas.getContext("2d");
+     const canvasElement = document.getElementById('myCanvas');
+    const myCanvas = new MyCanvas(canvasElement);
+    const ctx = canvasElement.getContext("2d");
 
   const sidebarElement = document.getElementById("section-content-sidebar");
   const sidebar = new Sidebar(
     sidebarData[0],
     sidebarElement,
-    drawCanvas.drawShapes
+    myCanvas.drawShapes
   );
 
-  canvas.height = window.innerHeight;
-  canvas.width = window.innerWidth;
+  myCanvas.height = window.innerHeight;
+  myCanvas.width = window.innerWidth;
 
 
 

@@ -1,4 +1,4 @@
-export function getAngle(ex, ey, cx, cy) {
+export function getAngleDeg(ex, ey, cx, cy) {
   let dy = ey - cy;
   let dx = ex - cx;
   let theta = Math.atan2(dy, dx);
