@@ -1,7 +1,6 @@
 import { SHAPES } from "../util/constants";
 import paper, { Project, Path, Group, PointText, tool, Tool, Rectangle, Point, Size } from 'paper';
-import Modal from "../modal/modal";
-import {getAngleDeg} from '../util/get_angle';
+import Konva from 'konva';
 
 const boundsIdentifierObj = {
   1: 'topLeft', 2: 'topRight', 3: 'bottomRight', 0: 'bottomLeft'
@@ -36,11 +35,8 @@ class MyCanvas {
     // has moved at least 10 points:
     tool.minDistance = 2;
 
-    //binds methods
     //shapes method binding
     this.drawShapes = this.drawShapes.bind(this);
-    this.drawTextShape = this.drawTextShape.bind(this);
-    this.drawActorShape = this.drawActorShape.bind(this);
 
     // furniture elements binding
     this.drawQueen = this.drawQueen.bind(this);
@@ -62,6 +58,9 @@ class MyCanvas {
     //general method binding
     this.getCenterPosition = this.getCenterPosition.bind(this);
 
+    // anchor binding
+    this.addAnchor = this.addAnchor.bind(this);
+    this.update = this.update.bind(this);
     //user interaction method binding
     // this.onToolDoubleClick = this.onToolDoubleClick.bind(this);
     // this.onToolMouseDown = this.onToolMouseDown.bind(this);
@@ -70,10 +69,10 @@ class MyCanvas {
     // this.onToolKeyDown = this.onToolKeyDown.bind(this);
 
     //tool level clicklistener
-    this.tool.onMouseDown = this.onToolMouseDown;
-    this.tool.onMouseUp = this.onToolMouseUp;
-    this.tool.onMouseDrag = this.onToolDrag;
-    this.tool.onKeyDown = this.onToolKeyDown;
+    // this.tool.onMouseDown = this.onToolMouseDown;
+    // this.tool.onMouseUp = this.onToolMouseUp;
+    // this.tool.onMouseDrag = this.onToolDrag;
+    // this.tool.onKeyDown = this.onToolKeyDown;
 
      //add double click listener on canvas because tool have no double click listener
     this.canvasElement.addEventListener("dblclick", this.onToolDoubleClick);
@@ -84,18 +83,11 @@ class MyCanvas {
     this.setMenuClickListener();
   }
 
-
-  //set right menu click listener
   setMenuClickListener(){
     const downloadFileElement = document.getElementById('download-file');
-    const bringToFrontElement = document.getElementById('bring-to-front');
-    const moveToBackElement = document.getElementById('move-to-back');
     downloadFileElement.addEventListener('click', this.downloadAsSVG.bind(this));
-    bringToFrontElement.addEventListener('click', this.bringToFront.bind(this));
-    moveToBackElement.addEventListener('click', this.moveToBack.bind(this));
   }
 
-  //set input to open file picker dialog
   openFile(){
     let input = document.createElement('input');
     input.type = 'file';
@@ -113,15 +105,10 @@ class MyCanvas {
     input.click();
   }
 
-  // set download project as svg
   downloadAsSVG() {
-   
     if(this.project.activeLayer.children.length == 0) return;
-
     const fileName = `ad_design_${Date.now()}.svg`;
- 
     let url = "data:image/svg+xml;utf8," + encodeURIComponent(this.project.exportSVG({asString:true}));
-    
     let downloadLinkElement = document.createElement("a");
     downloadLinkElement.download = fileName;
     downloadLinkElement.href = url;
@@ -143,13 +130,6 @@ class MyCanvas {
   drawShapes(shapeName){
 
     switch (shapeName) {
-      case SHAPES.TITLE:
-        startPoint = new Point(this.centerPosition.x-25, this.centerPosition.y-25);
-        this.drawTextShape(startPoint, "Add Text");
-        break;
-      case SHAPES.ACTOR:
-        this.drawActorShape();
-        break;
       case SHAPES.QUEEN:
         this.drawQueen();
         break;
@@ -346,6 +326,27 @@ class MyCanvas {
       ctx.drawImage(stairImg, 300, 200);
     }
     stairImg.src = "src/images/stairs.svg";
+
+    let stairsGroup = new Konva.Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+      });
+      let stairLayer = new Konva.Layer();
+
+      let stage = new Konva.Stage({
+        container: 'myCanvas',
+        width: 138,
+        height: 200,
+      });
+
+      stage.add(stairLayer);
+      stairLayer.add(stairsGroup);
+      stairsGroup.add(stairImg);
+      addAnchor(stairsGroup, 0, 0, 'topLeft');
+      addAnchor(stairsGroup, 138, 0, 'topRight');
+      addAnchor(stairsGroup, 138, 200, 'bottomRight');
+      addAnchor(stairsGroup, 0, 200, 'bottomLeft');
   }
 
   
@@ -394,7 +395,6 @@ class MyCanvas {
       addAnchor(group, x, y, name) {
         let stage = group.getStage();
         let layer = group.getLayer();
-
         let anchor = new Konva.Circle({
           x: x,
           y: y,
@@ -436,38 +436,7 @@ class MyCanvas {
 
         group.add(anchor);
       }
-      // let stage = new Konva.Stage({
-      //   container: 'container',
-      //   width: width,
-      //   height: height,
-      // });
-
-      // let layer = new Konva.Layer();
-      // stage.add(layer);
-
-      // // darth vader
-      // let darthVaderImg = new Konva.Image({
-      //   width: 200,
-      //   height: 137,
-      // });
-
-      // // yoda
-      // let yodaImg = new Konva.Image({
-      //   width: 93,
-      //   height: 104,
-      // });
-
-      // let darthVaderGroup = new Konva.Group({
-      //   x: 180,
-      //   y: 50,
-      //   draggable: true,
-      // });
-      // layer.add(darthVaderGroup);
-      // darthVaderGroup.add(darthVaderImg);
-      // addAnchor(darthVaderGroup, 0, 0, 'topLeft');
-      // addAnchor(darthVaderGroup, 200, 0, 'topRight');
-      // addAnchor(darthVaderGroup, 200, 138, 'bottomRight');
-      // addAnchor(darthVaderGroup, 0, 138, 'bottomLeft');
+    
 
 
 
@@ -482,28 +451,6 @@ class MyCanvas {
 
 
 
-
-
-
-  // adds text to the clicked area
-  drawTextShape(position, text){
-    //create text shape
-    let textShape = new PointText(position);
-    textShape.fillColor = this.strokeColor;
-    textShape.content = text;
-
-    //adds doubleclick listner to text
-    textShape.onDoubleClick = (e)=>{
-      //show modal to update text
-      if(textShape.bounds.selected){
-        new Modal((updatedText)=>{
-          textShape.content = updatedText;
-        }).show();
-      }
-    }
-
-    return textShape
-  }
 
 
   //on tool click
@@ -551,37 +498,6 @@ class MyCanvas {
       }
     }
   }
-
-  //draw actor shape
-  drawActorShape(){
-    //draw actor head
-    const head = new Path.Circle(new Point(this.centerPosition.x, this.centerPosition.y-50), 7);
-    this.setStrokeAndFill(head)
-
-    //draw actor body
-    const body = new Path.Line(new Point(this.centerPosition.x, this.centerPosition.y-43), new Point(this.centerPosition.x, this.centerPosition.y-10));
-    this.setStrokeAndFill(body)
-
-    //draw actor arms
-    const arms = new Path.Line(new Point(this.centerPosition.x-20, this.centerPosition.y-38), new Point(this.centerPosition.x+20, this.centerPosition.y-38));
-    this.setStrokeAndFill(arms) 
-
-    //draw feet
-    const leftFeet = new Path.Line(new Point(this.centerPosition.x-20, this.centerPosition.y+5), new Point(this.centerPosition.x, this.centerPosition.y-10));
-    this.setStrokeAndFill(leftFeet) 
-
-    const rightFeet = new Path.Line(new Point(this.centerPosition.x, this.centerPosition.y-10), new Point(this.centerPosition.x+20, this.centerPosition.y+5));
-    this.setStrokeAndFill(rightFeet) 
-
-    //add shapes to group to make full actor
-    let group =  new Group();
-    group.addChild(head);
-    group.addChild(body);
-    group.addChild(arms);
-    group.addChild(leftFeet);
-    group.addChild(rightFeet);
-  }
-
 
   //item drag listener
   onToolDrag(e){

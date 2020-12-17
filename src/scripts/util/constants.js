@@ -14,7 +14,4 @@ export const SHAPES = {
   LOVESEAT: "LOVE SEAT",
   COFFEETABLE: "COFFEE TABLE",
   FIREPLACE: "FIREPLACE",
-  STAIRS: "STAIRS",
-  TITLE: "Title",
-  ACTOR: 'Actor',
 };

@@ -68,26 +68,6 @@ const sidebarData = [
         name: SHAPES.STAIRS,
         uri: "./src/images/stairs.svg",
       },
-        {
-            name: SHAPES.TITLE,
-            uri: './src/images/title.svg'
-        },
-        {
-            name: SHAPES.ACTOR,
-            uri: './src/images/actor.svg'
-        },
-        {
-            name: SHAPES.CIRCLE,
-            uri: './src/images/circle.svg'
-        },
-        {
-            name: SHAPES.SQUARE,
-            uri: './src/images/square.svg'
-        },
-        {
-            name: SHAPES.DIVIDER,
-            uri: './src/images/divider.svg'
-        },
     ],
   },
 ];
