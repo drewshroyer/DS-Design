@@ -1,6 +1,4 @@
 export const SHAPES = {
-  SQUARE: "Square",
-  CIRCLE: "Circle",
   QUEEN: "Queen Bed",
   TWIN: "Twin Bed",
   RUG: "SQUARE RUG",
@@ -23,4 +21,14 @@ export const SHAPES = {
   ACTIVITY: "Activity",
   USECASE: "Use Case",
   DECISION: "Decision",
+  CLASS: 'Class',
+  SQUARE: 'Square',
+  DIVIDER: 'Divider',
+  CIRCLE: 'Circle',
+  OBJECT: 'Object',
+  INTERFACE: 'Interface',
+  ACTOR: 'Actor',
+  AGGREGATION: 'Aggregation',
+  COMPOSITION: 'Composition',
+  ASSOCIATION: 'Association',
 };

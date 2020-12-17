@@ -1,0 +1,11 @@
+<svg width="171" height="78" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+ <g>
+  <title>Layer 1</title>
+  <rect stroke="#000" id="svg_4" height="76" width="168.999985" y="1.000006" x="1.000005" fill-opacity="null" stroke-opacity="null" stroke-width="2" fill="#fff"/>
+  <rect stroke="#000" id="svg_5" height="31.000001" width="25" y="5.65" x="139" fill-opacity="null" stroke-opacity="null" stroke-width="2" fill="#fff"/>
+  <rect id="svg_6" height="8" width="10" y="9.65" x="134" fill-opacity="null" stroke-opacity="null" stroke-width="2" stroke="#000" fill="#fff"/>
+  <rect id="svg_7" height="8" width="10" y="22.65" x="134" fill-opacity="null" stroke-opacity="null" stroke-width="2" stroke="#000" fill="#fff"/>
+  <text stroke="#000" xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="20" id="svg_8" y="50.275" x="26.664063" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="#000000">Component</text>
+ </g>
+</svg>
