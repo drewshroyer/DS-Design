@@ -59,6 +59,7 @@ class MyCanvas {
     // anchor binding
     this.addAnchor = this.addAnchor.bind(this);
     this.update = this.update.bind(this);
+    // this.createAnchors = this.createAnchors.bind(this);
 
      //add double click listener on canvas because tool have no double click listener
     this.canvasElement.addEventListener("dblclick", this.onToolDoubleClick);
@@ -102,8 +103,8 @@ class MyCanvas {
  }
 
   drawShapes(shapeName){
-
-    switch (shapeName) {
+ 
+    switch (shapeName) {  
       case SHAPES.QUEEN:
         this.drawQueen();
         break;
@@ -293,44 +294,55 @@ class MyCanvas {
   }
 
    drawStairs() {
-    let stairImg = new Image();
-    const canvasElement = document.getElementById('myCanvas');
-    const ctx = canvasElement.getContext("2d");
-    stairImg.src = "src/images/stairs.svg";
-    this.createAnchors(stairImg);
-    
-    stairImg.onload = function() {
-      ctx.drawImage(stairImg, 300, 200);
-    }
-    // debugger
-  }
+    // const canvasElement = document.getElementById('myCanvas');
+    // const ctx = canvasElement.getContext("Konva");
+     let stairImg = new Image();
+      let yodaImg = new Konva.Image({
+        width: 42.8456376,
+        height: 80,
+      });
 
-  createAnchors(image) {
-    debugger
     let group = new Group({
         x: 300,
         y: 200,
         draggable: true,
-      });
+    });
+        // debugger
+        let layer = new Layer();
+        debugger
+        let stage = new Stage({
+          container: 'myCanvas',
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+        //  debugger    
+        stage.add(layer);
+        layer.add(group);
+        group.add(yodaImg);
+        // debugger
+        this.addAnchor(group, 0, 0, 'topLeft');
+        this.addAnchor(group, 42.8456376, 0, 'topRight');
+        this.addAnchor(group, 42.8456376, 80, 'bottomRight');
+        this.addAnchor(group, 0, 80, 'bottomLeft');
 
-      let layer = new Layer();
-      debugger
-      let stage = new Stage({
-        container: 'myCanvas',
-        width: 138,
-        height: 200,
-      });
-      debugger
-      stage.add(layer);
-      layer.add(group);
-      group.add(image);
-      addAnchor(group, 0, 0, 'topLeft');
-      addAnchor(group, 138, 0, 'topRight');
-      addAnchor(group, 138, 200, 'bottomRight');
-      addAnchor(group, 0, 200, 'bottomLeft');
+    stairImg.onload = function() {
+      yodaImg.image(stairImg)
+      layer.draw();
+    }
+    stairImg.src = "src/images/stairs.svg";
+    console.log(true);
+  
+   ctx.drawImage(yodaImg, 300, 200);
   }
+
+
+    // createAnchors(image) {
+    //   debugger
+      
+    // }
   
       update(activeAnchor) {
+        debugger
         let group = activeAnchor.getParent();
 
         let topLeft = group.get('.topLeft')[0];

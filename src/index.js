@@ -5,16 +5,16 @@ import MyCanvas from "./scripts/canvas/canvas";
 
 window.addEventListener("DOMContentLoaded", (main) => {
 
-    const canvasElement = document.getElementById('myCanvas');
-    const myCanvas = new MyCanvas(canvasElement);
-    const ctx = canvasElement.getContext("2d");
+  const canvasElement = document.getElementById('myCanvas');
+  const myCanvas = new MyCanvas(canvasElement);
+  const ctx = canvasElement.getContext("2d");
 
-    const sidebarElement = document.getElementById("section-content-sidebar");
-    const sidebar = new Sidebar(
-      sidebarData[0],
-      sidebarElement,
-      myCanvas.drawShapes
-    );
+  const sidebarElement = document.getElementById("section-content-sidebar");
+  const sidebar = new Sidebar(
+    sidebarData[0],
+    sidebarElement,
+    myCanvas.drawShapes
+  );
 
   myCanvas.height = window.innerHeight;
   myCanvas.width = window.innerWidth;
@@ -48,7 +48,6 @@ window.addEventListener("DOMContentLoaded", (main) => {
      let startPlanning = document.getElementById("submit-dimension-button");
      let feetHeight = document.getElementById("height-input-feet").value;
      let inchesHeight = document.getElementById("height-input-inches").value;
-     debugger
      let height = ((feetHeight * 12) + inchesHeight) * .5;
      let feetWidth = document.getElementById("width-input-feet").value;
      let inchesWidth = document.getElementById("width-input-inches").value;
@@ -62,7 +61,9 @@ window.addEventListener("DOMContentLoaded", (main) => {
      ctx.fillText(feetHeight+"'"+inchesHeight+"''", 60+(width/2), 70);
      ctx.fillText(feetWidth+"'"+inchesWidth+"''", 20, 60+(height/2));
      modal.style.display = "none";
-
    })
+
+
+
 });
 
