@@ -50,6 +50,23 @@ class MyCanvas {
     this.drawDecisionShape = this.drawDecisionShape.bind(this);
     this.drawActorShape = this.drawActorShape.bind(this);
 
+    // furniture elements binding
+    this.drawQueen = this.drawQueen.bind(this);
+    this.drawTwin = this.drawTwin.bind(this);
+    this.drawRug = this.drawRug.bind(this);
+    this.drawRoundRug = this.drawRoundRug.bind(this);
+    this.drawDining = this.drawDining.bind(this);
+    this.drawOffice = this.drawOffice.bind(this);
+    this.drawTVCabinent = this.drawTVCabinent.bind(this);
+    this.drawArmChair = this.drawArmChair.bind(this);
+    this.drawUpholstered = this.drawUpholstered.bind(this);
+    this.drawEndTable = this.drawEndTable.bind(this);
+    this.drawRoundTable = this.drawRoundTable.bind(this);
+    this.drawLoveSeat = this.drawLoveSeat.bind(this);
+    this.drawCoffeeTable = this.drawCoffeeTable.bind(this);
+    this.drawFirePlace = this.drawFirePlace.bind(this);
+    this.drawStairs = this.drawStairs.bind(this);
+
     //general method binding
     this.getCenterPosition = this.getCenterPosition.bind(this);
 
@@ -181,9 +198,203 @@ class MyCanvas {
         break;
       case SHAPES.ACTOR:
         this.drawActorShape();
+        break;
+      case SHAPES.QUEEN:
+        this.drawQueen();
+        break;
+      case SHAPES.TWIN:
+        this.drawTwin();
+        break;
+      case SHAPES.RUG:
+        this.drawRug();
+        break;
+      case SHAPES.ROUNDRUG:
+        this.drawRoundRug();
+        break;
+      case SHAPES.DINING:
+        this.drawDining();
+        break;
+      case SHAPES.OFFICE:
+        this.drawOffice();
+        break;
+      case SHAPES.TVCABINENT:
+        this.drawTVCabinent();
+        break;
+      case SHAPES.ARMCHAIR:
+        this.drawArmChair();
+        break;
+         case SHAPES.UPHOLSTERED:
+        this.drawUpholstered();
+        break;
+      case SHAPES.ENDTABLE:
+        this.drawEndTable();
+        break;
+      case SHAPES.ROUNDTABLE:
+        this.drawRoundTable();
+        break;
+      case SHAPES.LOVESEAT:
+        this.drawLoveSeat();
+        break;
+      case SHAPES.COFFEETABLE:
+        this.drawCoffeeTable();
+        break;
+      case SHAPES.FIREPLACE:
+        this.drawFirePlace();
+        break;
+      case SHAPES.STAIRS:
+        this.drawStairs();
       default:
         break;
     }
+  }
+
+  drawQueen() {
+    let queenImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    queenImg.onload = function() {
+      ctx.drawImage(queenImg, 80, 80);
+    }
+    queenImg.src = "src/images/queen-bed.svg";
+  }
+
+  drawTwin() {
+    let twinImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    twinImg.onload = function() {
+      ctx.drawImage(twinImg, 300, 200);
+    }
+    twinImg.src = "src/images/twin-bed.svg";
+  }
+
+  drawRug() {
+    let rugImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    rugImg.onload = function() {
+      ctx.drawImage(rugImg, 300, 200);
+    }
+    rugImg.src = "src/images/rug.svg";
+  }
+
+   drawRoundRug() {
+    let roundRugImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    roundRugImg.onload = function() {
+      ctx.drawImage(roundRugImg, 300, 200);
+    }
+    roundRugImg.src = "src/images/round-rug.svg";
+  }
+
+   drawDining() {
+    let diningImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    diningImg.onload = function() {
+      ctx.drawImage(diningImg, 300, 300);
+    }
+    diningImg.src = "src/images/dining-table.svg";
+  }
+
+  drawOffice() {
+    let officeImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    officeImg.onload = function() {
+      ctx.drawImage(officeImg, 300, 200);
+    }
+    officeImg.src = "src/images/office-desk.svg";
+  }
+
+  drawTVCabinent() {
+    let tvImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    tvImg.onload = function() {
+      ctx.drawImage(tvImg, 300, 200);
+    }
+    tvImg.src = "src/images/tv-cabinent.svg";
+  }
+
+   drawArmChair() {
+    let armChairImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    armChairImg.onload = function() {
+      ctx.drawImage(armChairImg, 300, 200);
+    }
+    armChairImg.src = "src/images/arm-chair.svg";
+  }
+  drawUpholstered() {
+    let upImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    upImg.onload = function() {
+      ctx.drawImage(upImg, 300, 200);
+    }
+    upImg.src = "src/images/upholstered-chair.svg";
+  }
+
+    drawEndTable() {
+    let endImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    endImg.onload = function() {
+      ctx.drawImage(endImg, 300, 200);
+    }
+    endImg.src = "src/images/end-table.svg";
+  }
+
+   drawRoundTable() {
+    let roundImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    roundImg.onload = function() {
+      ctx.drawImage(roundImg, 300, 200);
+    }
+    roundImg.src = "src/images/round-table.svg";
+  }
+
+   drawLoveSeat() {
+    let loveImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    loveImg.onload = function() {
+      ctx.drawImage(loveImg, 300, 300);
+    }
+    loveImg.src = "src/images/love-seat.svg";
+  }
+
+  drawCoffeeTable() {
+    let coffeeImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    coffeeImg.onload = function() {
+      ctx.drawImage(coffeeImg, 300, 200);
+    }
+    coffeeImg.src = "src/images/coffee-table.svg";
+  }
+
+  drawFirePlace() {
+    let fireImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    fireImg.onload = function() {
+      ctx.drawImage(fireImg, 300, 200);
+    }
+    fireImg.src = "src/images/fire-place.svg";
+  }
+
+   drawStairs() {
+    let stairImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    stairImg.onload = function() {
+      ctx.drawImage(stairImg, 300, 200);
+    }
+    stairImg.src = "src/images/stairs.svg";
   }
 
   // Creates three rectangle to make a class UML
