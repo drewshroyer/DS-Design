@@ -5,21 +5,19 @@ import MyCanvas from "./scripts/canvas/canvas";
 
 window.addEventListener("DOMContentLoaded", (main) => {
 
-     const canvasElement = document.getElementById('myCanvas');
+    const canvasElement = document.getElementById('myCanvas');
     const myCanvas = new MyCanvas(canvasElement);
     const ctx = canvasElement.getContext("2d");
 
-  const sidebarElement = document.getElementById("section-content-sidebar");
-  const sidebar = new Sidebar(
-    sidebarData[0],
-    sidebarElement,
-    myCanvas.drawShapes
-  );
+    const sidebarElement = document.getElementById("section-content-sidebar");
+    const sidebar = new Sidebar(
+      sidebarData[0],
+      sidebarElement,
+      myCanvas.drawShapes
+    );
 
   myCanvas.height = window.innerHeight;
   myCanvas.width = window.innerWidth;
-
-
 
    let modal = document.getElementById("myModal");
    let btn = document.getElementById("myBtn");
