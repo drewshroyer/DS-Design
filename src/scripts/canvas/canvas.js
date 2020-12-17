@@ -63,11 +63,11 @@ class MyCanvas {
     this.getCenterPosition = this.getCenterPosition.bind(this);
 
     //user interaction method binding
-    this.onToolDoubleClick = this.onToolDoubleClick.bind(this);
-    this.onToolMouseDown = this.onToolMouseDown.bind(this);
-    this.setOneItemSelected = this.setOneItemSelected.bind(this);
-    this.onToolDrag = this.onToolDrag.bind(this);
-    this.onToolKeyDown = this.onToolKeyDown.bind(this);
+    // this.onToolDoubleClick = this.onToolDoubleClick.bind(this);
+    // this.onToolMouseDown = this.onToolMouseDown.bind(this);
+    // this.setOneItemSelected = this.setOneItemSelected.bind(this);
+    // this.onToolDrag = this.onToolDrag.bind(this);
+    // this.onToolKeyDown = this.onToolKeyDown.bind(this);
 
     //tool level clicklistener
     this.tool.onMouseDown = this.onToolMouseDown;
@@ -80,12 +80,6 @@ class MyCanvas {
 
     //set right menu liteners
     this.setMenuClickListener = this.setMenuClickListener.bind(this);
-
-    //line attachement function binding
-    this.checkLineAttachment = this.checkLineAttachment.bind(this);
-
-    //line render function
-    this.reRenderLine = this.reRenderLine.bind(this);
 
     this.setMenuClickListener();
   }
@@ -126,9 +120,9 @@ class MyCanvas {
 
     const fileName = `ad_design_${Date.now()}.svg`;
  
-    var url = "data:image/svg+xml;utf8," + encodeURIComponent(this.project.exportSVG({asString:true}));
+    let url = "data:image/svg+xml;utf8," + encodeURIComponent(this.project.exportSVG({asString:true}));
     
-    var downloadLinkElement = document.createElement("a");
+    let downloadLinkElement = document.createElement("a");
     downloadLinkElement.download = fileName;
     downloadLinkElement.href = url;
     downloadLinkElement.click();
@@ -355,6 +349,142 @@ class MyCanvas {
   }
 
   
+      update(activeAnchor) {
+        let group = activeAnchor.getParent();
+
+        let topLeft = group.get('.topLeft')[0];
+        let topRight = group.get('.topRight')[0];
+        let bottomRight = group.get('.bottomRight')[0];
+        let bottomLeft = group.get('.bottomLeft')[0];
+        let image = group.get('Image')[0];
+
+        let anchorX = activeAnchor.getX();
+        let anchorY = activeAnchor.getY();
+
+        // update anchor positions
+        switch (activeAnchor.getName()) {
+          case 'topLeft':
+            topRight.y(anchorY);
+            bottomLeft.x(anchorX);
+            break;
+          case 'topRight':
+            topLeft.y(anchorY);
+            bottomRight.x(anchorX);
+            break;
+          case 'bottomRight':
+            bottomLeft.y(anchorY);
+            topRight.x(anchorX);
+            break;
+          case 'bottomLeft':
+            bottomRight.y(anchorY);
+            topLeft.x(anchorX);
+            break;
+        }
+
+        image.position(topLeft.position());
+
+        let width = topRight.getX() - topLeft.getX();
+        let height = bottomLeft.getY() - topLeft.getY();
+        if (width && height) {
+          image.width(width);
+          image.height(height);
+        }
+      }
+      
+      addAnchor(group, x, y, name) {
+        let stage = group.getStage();
+        let layer = group.getLayer();
+
+        let anchor = new Konva.Circle({
+          x: x,
+          y: y,
+          stroke: '#000',
+          fill: '#ddd',
+          strokeWidth: 1,
+          radius: 2,
+          name: name,
+          draggable: true,
+          dragOnTop: false,
+        });
+
+        anchor.on('dragmove', function () {
+          update(this);
+          layer.draw();
+        });
+        anchor.on('mousedown touchstart', function () {
+          group.draggable(false);
+          this.moveToTop();
+        });
+        anchor.on('dragend', function () {
+          group.draggable(true);
+          layer.draw();
+        });
+        // add hover styling
+        anchor.on('mouseover', function () {
+          let layer = this.getLayer();
+          document.body.style.cursor = 'pointer';
+          this.strokeWidth(2);
+          layer.draw();
+        });
+
+        anchor.on('mouseout', function () {
+          let layer = this.getLayer();
+          document.body.style.cursor = 'default';
+          this.strokeWidth(2);
+          layer.draw();
+        });
+
+        group.add(anchor);
+      }
+      // let stage = new Konva.Stage({
+      //   container: 'container',
+      //   width: width,
+      //   height: height,
+      // });
+
+      // let layer = new Konva.Layer();
+      // stage.add(layer);
+
+      // // darth vader
+      // let darthVaderImg = new Konva.Image({
+      //   width: 200,
+      //   height: 137,
+      // });
+
+      // // yoda
+      // let yodaImg = new Konva.Image({
+      //   width: 93,
+      //   height: 104,
+      // });
+
+      // let darthVaderGroup = new Konva.Group({
+      //   x: 180,
+      //   y: 50,
+      //   draggable: true,
+      // });
+      // layer.add(darthVaderGroup);
+      // darthVaderGroup.add(darthVaderImg);
+      // addAnchor(darthVaderGroup, 0, 0, 'topLeft');
+      // addAnchor(darthVaderGroup, 200, 0, 'topRight');
+      // addAnchor(darthVaderGroup, 200, 138, 'bottomRight');
+      // addAnchor(darthVaderGroup, 0, 138, 'bottomLeft');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // adds text to the clicked area
   drawTextShape(position, text){
     //create text shape
@@ -395,7 +525,6 @@ class MyCanvas {
       if(this.currentActiveItem.hitTest(e.point, {bounds: true, tolerance: 5})){
         //get bounds of the shape
         const bounds = this.currentActiveItem.bounds;
-
 
         //itrating to find the exact bound point
         for(let[key, value] of Object.entries(boundsIdentifierObj)){
@@ -461,84 +590,16 @@ class MyCanvas {
 
     if(this.currentActiveItem.data.state === 'move'){
       this.currentActiveItem.position = e.point;  
-      
-      //check if the shape has any attached lines
-      if(this.currentActiveItem.data.lineShape){
-        const lineShapeObject = this.currentActiveItem.data.lineShape;
-        for (let [key, value] of Object.entries(lineShapeObject)) {
-          const element = value[1];
-          const lineStartPoint = element.firstChild.firstChild.segments[0].point;
-          const lineType = element.data.lineType;
-          const lineId = element.data.lineId;
-          element.remove();
-         element = this.drawLineShape(lineStartPoint, this.currentActiveItem.bounds[value[0]], lineType);
-         element.data.lineId = lineId; 
-         lineShapeObject[key] = [value[0], element]
-        }
-      }
-    } else
+    }
     if(this.currentActiveItem.data.state === 'resize'){
-      if(this.currentActiveItem.data.type === LINE){
-        //shapes with type line, re-rendering line on each user move
-        this.reRenderLine(e.point);
-        
-        this.checkLineAttachment(e);
-      }else{
         //shapes other than line, updating the bounds
         this.currentActiveItem.bounds = new Rectangle(
           this.currentActiveItem.data.from,e.point);
-      }
       this.currentActiveItem.bounds.selected = true
     } 
   }
-
-  reRenderLine(headPosition){
-    const lineStartPoint = this.currentActiveItem.firstChild.firstChild.segments[0].point;
-    const lineType = this.currentActiveItem.data.lineType;
-    const lineId = this.currentActiveItem.data.lineId;
-    this.currentActiveItem.remove();
-    this.currentActiveItem =  this.drawLineShape(lineStartPoint, headPosition, lineType);
-    this.currentActiveItem.data.state = 'resize'
-    this.currentActiveItem.data.lineId = lineId;
-  }
-
   // attach line to shapes
-  checkLineAttachment(event) {
-    //iteratethough each element to find the intresecting shape
-    this.project.activeLayer.children.forEach(child=>{
-      // find the shapes that line intersected with
-      if(child != this.currentActiveItem && child.hitTest(event.point, {bounds: true, tolerance: 5})){
-        //add line to attached shapes
-
-        const bounds = child.bounds;
-        //itrating to find the exact bound point
-        for(let[key, value] of Object.entries(boundsCenterIdentifierObj)){
-          if(bounds[value].isClose(event.point, 5)){
-            //get center bound point of the side line touches
-            const centerPoint = new Point(bounds[value].x, bounds[value].y);
-            this.reRenderLine(centerPoint);
-
-            //set data to shape to allow shape to move line head with it as it is dragged
-
-            // check if the lineShape already exists
-            if(!child.data.lineShape) {
-              child.data.lineShape = {}
-            }
-
-            // add line currentActive Line Shape and also the side it is attached with
-            child.data.lineShape[this.currentActiveItem.data.lineId] = [value, this.currentActiveItem];
-            break;
-          }
-        }
-      } else {
-        //remove line attachement with shapes
-        if(child.data.lineShape){
-          delete child.data.lineShape[this.currentActiveItem.data.lineId];
-        }
-      }
-    })
-  }
-
+  
   //on tool double click
   onToolDoubleClick(e){
     if(e.ctrlKey) {
@@ -548,60 +609,60 @@ class MyCanvas {
 
   
 
-  //toggle item selecteion and saving currentActiveItem
-  setOneItemSelected(e){
-    const position = e.point;
-    let clickedItems = []
-    this.project.activeLayer.children.forEach(child=>{
-      if(child.contains(position)){
-        clickedItems.push(child);
-      } else {
-        child.bounds.selected =  false;
-      }
-    })
-    //return if no item is selected
-    if(clickedItems.length === 0) return;
+  // //toggle item selecteion and saving currentActiveItem
+  // setOneItemSelected(e){
+  //   const position = e.point;
+  //   let clickedItems = []
+  //   this.project.activeLayer.children.forEach(child=>{
+  //     if(child.contains(position)){
+  //       clickedItems.push(child);
+  //     } else {
+  //       child.bounds.selected = false;
+  //     }
+  //   })
+  //   //return if no item is selected
+  //   if(clickedItems.length === 0) return;
 
-    //select the clicked item
-    let latestItem = clickedItems[0];
-    for (let i = 0; i < clickedItems.length; i++) {
-      if(latestItem.id < clickedItems[i].id){
-        latestItem = clickedItems[i];
-      }else
-      {
-        clickedItems[i].bounds.selected = false;
-      }
-    }
-    this.currentActiveItem = latestItem;
-    latestItem.bounds.selected = true;
-  }
+  //   //select the clicked item
+  //   let latestItem = clickedItems[0];
+  //   for (let i = 0; i < clickedItems.length; i++) {
+  //     if(latestItem.id < clickedItems[i].id){
+  //       latestItem = clickedItems[i];
+  //     }else
+  //     {
+  //       clickedItems[i].bounds.selected = false;
+  //     }
+  //   }
+  //   this.currentActiveItem = latestItem;
+  //   latestItem.bounds.selected = true;
+  // }
 
 
   // keyboard intraction to move shapes
-  onToolKeyDown(e){
-    if(!this.currentActiveItem) return;
+  // onToolKeyDown(e){
+  //   if(!this.currentActiveItem) return;
 
-    const position = this.currentActiveItem.position;
-    const step = 5;
-    switch(e.key){
-      case 'left':
-        position.x -= step;
-        break;
-      case 'right':
-        position.x += step;
-        break;
-      case 'up':
-        position.y -= step;
-        break;
-      case 'down':
-        position.y += step;
-        break; 
-      case 'delete':
-        this.currentActiveItem.remove();
-        break;
-    }
-    this.currentActiveItem.position = position;
-  }
+  //   const position = this.currentActiveItem.position;
+  //   const step = 5;
+  //   switch(e.key){
+  //     case 'left':
+  //       position.x -= step;
+  //       break;
+  //     case 'right':
+  //       position.x += step;
+  //       break;
+  //     case 'up':
+  //       position.y -= step;
+  //       break;
+  //     case 'down':
+  //       position.y += step;
+  //       break; 
+  //     case 'delete':
+  //       this.currentActiveItem.remove();
+  //       break;
+  //   }
+  //   this.currentActiveItem.position = position;
+  // }
 
 
   //----------------------- general methods --------------------------------------
