@@ -87,7 +87,7 @@ class MyCanvas {
  }
 
   drawShapes(shapeName){
- 
+
     let stage = new Konva.Stage({
       container: 'konvaContainer',
       width: window.innerWidth,
@@ -358,7 +358,7 @@ class MyCanvas {
 
     stage.add(layer);
     layer.add(group);
-    this.addText(height, width, group)
+    // this.addText(height, width, group)
     group.add(stairKonvaImg);
 
     this.addAnchor(group, 0, 0, 'topLeft');
@@ -370,6 +370,7 @@ class MyCanvas {
       stairKonvaImg.image(stairImg)
       layer.draw();
     }
+
     stairImg.src = "src/images/stairs.svg";
   }
 

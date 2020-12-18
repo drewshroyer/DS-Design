@@ -35,7 +35,7 @@ window.addEventListener("DOMContentLoaded", (main) => {
 
    close.onclick = function () {
      modal.style.display = "none";
-     let container = document.getElementById("konvaContainer");
+    let container = document.getElementById("konvaContainer");
      container.style.display = 'block';
    };
 
