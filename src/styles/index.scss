@@ -15,6 +15,19 @@ h1 {
     letter-spacing: -2px;
 }
 
+#container {
+    display: none;
+    background-color: transparent;
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 11vh;
+    left: 20vw;
+    right: 0;
+    bottom: 0;
+}
+
 .DS-header {
     font-family: Didonesque;
     font-size: 32px;
@@ -144,7 +157,7 @@ h2:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1; /* Sit on top */
+  z-index: 8; /* Sit on top */
   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;

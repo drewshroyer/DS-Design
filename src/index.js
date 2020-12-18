@@ -53,6 +53,9 @@ window.addEventListener("DOMContentLoaded", (main) => {
      let inchesWidth = document.getElementById("width-input-inches").value;
      let width = ((feetWidth * 12) + inchesWidth) * .6;
     
+     let container = document.getElementById("container");
+     container.style.display = 'block';
+     
      ctx.strokeStyle = "black";
      ctx.lineWidth = 5;
      ctx.strokeRect(80, 80, width, height);

@@ -22,7 +22,6 @@ class MyCanvas {
     this.defaultSize = [100,100];
     this.currentActiveItem = null;
     this.strokeWidth = 2;
-
     // sets up paper js on canvas
     paper.setup(canvasElement);
     //creates new project in paper
@@ -106,9 +105,17 @@ class MyCanvas {
 
   drawShapes(shapeName){
  
+    let stage = new Konva.Stage({
+      container: 'container',
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+    
+    let layer = new Layer();
+
     switch (shapeName) {  
       case SHAPES.QUEEN:
-        this.drawQueen();
+        this.drawQueen(stage, layer);
         break;
       case SHAPES.TWIN:
         this.drawTwin();
@@ -153,18 +160,42 @@ class MyCanvas {
         this.drawFirePlace();
         break;
       case SHAPES.STAIRS:
-        this.drawStairs();
+        this.drawStairs(stage, layer);
       default:
         break;
     }
   }
 
-  drawQueen() {
+  drawQueen(stage, layer) {
     let queenImg = new Image();
-    const canvasElement = document.getElementById('myCanvas');
-    const ctx = canvasElement.getContext("2d");
+     let queenKonvaImg = new Konva.Image({
+      width: 61.9875776,
+      height: 80,
+    });
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+    // let layer = new Layer();
+    // let stage = new Stage({
+    //   container: 'container',
+    //   width: window.innerWidth,
+    //   height: window.innerHeight,
+    // });
+
+    stage.add(layer);
+    layer.add(group);
+    group.add(queenKonvaImg);
+
+    this.addAnchor(group, 0, 0, 'topLeft');
+    this.addAnchor(group, 61.9875776, 0, 'topRight');
+    this.addAnchor(group, 61.9875776, 80, 'bottomRight');
+    this.addAnchor(group, 0, 80, 'bottomLeft');
+
     queenImg.onload = function() {
-      ctx.drawImage(queenImg, 300, 300);
+      queenKonvaImg.image(queenImg)
+      layer.draw();
     }
     queenImg.src = "src/images/queen-bed.svg";
   }
@@ -308,33 +339,34 @@ class MyCanvas {
     // fireImg.src = "src/images/fire-place.svg";
 
       let stage = new Konva.Stage({
-        container: 'myCanvas',
+        container: 'container',
         width: window.innerWidth,
         height: window.innerHeight,
       });
 
-      var layer = new Konva.Layer();
+      let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+      let layer = new Konva.Layer();
       stage.add(layer);
+      layer.add(group);
 
       let SOURCE = 'src/images/fire-place.svg';
      
-      let canvas = document.createElement('canvas');
-      Canvg.from(canvas, SOURCE, {
-        renderCallback: function () {
-          let image = new Konva.Image({
-            image: canvas,
-            x: 200,
-            width: 150,
-            height: 150,
-          });
-          layer.add(image);
-          layer.batchDraw();
-        },
+      Konva.Image.fromURL(SOURCE, (imageNode) => {
+        layer.add(imageNode);
+        imageNode.setAttrs({
+          width: 150,
+          height: 150,
+        });
+        layer.batchDraw();
       });
-      console.log(true);
   }
 
-  drawStairs() {
+  drawStairs(stage, layer) {
     let stairImg = new Image();
     let stairKonvaImg = new Konva.Image({
       width: 42.8456376,
@@ -345,12 +377,7 @@ class MyCanvas {
         y: 200,
         draggable: true,
     });
-    let layer = new Layer();
-    let stage = new Stage({
-      container: 'myCanvas',
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
+
     stage.add(layer);
     layer.add(group);
     group.add(stairKonvaImg);
@@ -365,17 +392,9 @@ class MyCanvas {
       layer.draw();
     }
     stairImg.src = "src/images/stairs.svg";
-    console.log(true);
   }
-
-
-    // createAnchors(image) {
-    //   debugger
-      
-    // }
   
       update(activeAnchor) {
-        debugger
         let group = activeAnchor.getParent();
 
         let topLeft = group.get('.topLeft')[0];
@@ -387,7 +406,6 @@ class MyCanvas {
         let anchorX = activeAnchor.getX();
         let anchorY = activeAnchor.getY();
 
-        // update anchor positions
         switch (activeAnchor.getName()) {
           case 'topLeft':
             topRight.y(anchorY);
@@ -435,19 +453,22 @@ class MyCanvas {
           update(this);
           layer.draw();
         });
+
         anchor.on('mousedown touchstart', function () {
           group.draggable(false);
           this.moveToTop();
         });
+
         anchor.on('dragend', function () {
           group.draggable(true);
           layer.draw();
         });
+
         // add hover styling
         anchor.on('mouseover', function () {
           let layer = this.getLayer();
           document.body.style.cursor = 'pointer';
-          this.strokeWidth(2);
+          this.strokeWidth(3);
           layer.draw();
         });
 
