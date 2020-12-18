@@ -4,7 +4,7 @@ Based off the styling of Architectural Digest, the AD Design room planner allow 
 
 This modern and minimal app will serve as a tool for room planning and can be fully customizable based on a user's needs. 
 
-WIREFRAME: https://wireframe.cc/pro/pp/77f2e95fe382351
+- [WIREFRAME](https://wireframe.cc/pro/pp/77f2e95fe382351)
 
 Used Technologies: 
 * JavaScript
@@ -15,4 +15,6 @@ Used Technologies:
 * Webpack
 * myCanvas
 
-LIVE SITE:
+- [LIVE SITE](http://drewshroyer.com/DS-Design/)
+
+- [MY LINKEDIN](https://www.linkedin.com/in/drew-shroyer-861b32a4/)
