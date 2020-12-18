@@ -341,18 +341,40 @@ class MyCanvas {
 
   drawStairs(stage, layer) {
     let stairImg = new Image();
+    let height = Math.floor(80 * 2 / 24);
+    let width = Math.floor(42.8456376 * 2 / 24)
     let stairKonvaImg = new Konva.Image({
       width: (42.8456376*2),
       height: 80*2,
     });
+    
     let group = new Group({
         x: 300,
         y: 200,
         draggable: true,
     });
 
+    let heightText = new Konva.Text({
+        x: group.x() - 320,
+        y: group.y() - 140,
+        text: `${height}'`,
+        fontSize: 12,
+        fontFamily: 'Lato',
+        fill: 'black',
+    });
+    let widthText = new Konva.Text({
+        x: group.x() - 260,
+        y: group.y() -220,
+        text: `${width}'`,
+        fontSize: 12,
+        fontFamily: 'Lato',
+        fill: 'black',
+    });
+
     stage.add(layer);
     layer.add(group);
+    group.add(heightText);
+    group.add(widthText);
     group.add(stairKonvaImg);
 
     this.addAnchor(group, 0, 0, 'topLeft');
@@ -415,11 +437,10 @@ class MyCanvas {
           y: y,
           stroke: '#000',
           fill: 'blue',
-          strokeWidth: 1,
-          radius: 2,
+          strokeWidth: 1.5,
+          radius: 4,
           name: name,
           draggable: true,
-          dragOnTop: false,
         });
 
         anchor.on('dragmove', function () {
@@ -459,7 +480,7 @@ class MyCanvas {
     item.strokeColor = this.strokeColor;
     item.fillColor = this.fillColor;
   }
-  
+
 }
 
 export default MyCanvas;
