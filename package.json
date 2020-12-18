@@ -17,6 +17,7 @@
   "author": "mrcjbradley",
   "license": "ISC",
   "dependencies": {
+    "canvg": "^3.0.7",
     "konva": "^7.2.1",
     "paper": "^0.12.11"
   },

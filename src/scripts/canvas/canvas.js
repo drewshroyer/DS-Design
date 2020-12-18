@@ -2,6 +2,7 @@ import { SHAPES } from "../util/constants";
 import paper, { Project, tool, Tool, Rectangle, Point } from 'paper';
 import Konva from 'konva';
 import { Group, Layer, Stage, Circle } from 'konva';
+import Canvg from 'canvg';
 
 const boundsIdentifierObj = {
   1: 'topLeft', 2: 'topRight', 3: 'bottomRight', 0: 'bottomLeft'
@@ -298,13 +299,39 @@ class MyCanvas {
   }
 
   drawFirePlace() {
-    let fireImg = new Image();
-    const canvasElement = document.getElementById('myCanvas');
-    const ctx = canvasElement.getContext("2d");
-    fireImg.onload = function() {
-      ctx.drawImage(fireImg, 300, 200);
-    }
-    fireImg.src = "src/images/fire-place.svg";
+    // let fireImg = new Image();
+    // const canvasElement = document.getElementById('myCanvas');
+    // const ctx = canvasElement.getContext("2d");
+    // fireImg.onload = function() {
+    //   ctx.drawImage(fireImg, 300, 200);
+    // }
+    // fireImg.src = "src/images/fire-place.svg";
+
+      let stage = new Konva.Stage({
+        container: 'myCanvas',
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+
+      var layer = new Konva.Layer();
+      stage.add(layer);
+
+      let SOURCE = 'src/images/fire-place.svg';
+     
+      let canvas = document.createElement('canvas');
+      Canvg.from(canvas, SOURCE, {
+        renderCallback: function () {
+          let image = new Konva.Image({
+            image: canvas,
+            x: 200,
+            width: 150,
+            height: 150,
+          });
+          layer.add(image);
+          layer.batchDraw();
+        },
+      });
+      console.log(true);
   }
 
   drawStairs() {
