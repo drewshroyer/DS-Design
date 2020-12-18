@@ -43,6 +43,7 @@ class MyCanvas {
     // anchor binding
     this.addAnchor = this.addAnchor.bind(this);
     this.updateAnchor = this.updateAnchor.bind(this);
+    this.addText = this.addText.bind(this);
 
      //add double click listener on canvas because tool have no double click listener
     this.canvasElement.addEventListener("dblclick", this.onToolDoubleClick);
@@ -340,11 +341,9 @@ class MyCanvas {
   }
 
   drawStairs(stage, layer) {
+    let height = 80;
+    let width = 42.8456376;
     let stairImg = new Image();
-    let heightFeet = Math.floor(80 / 24);
-    let heightInches = Math.floor(((80/24) - Math.floor(80 / 24)) * 12) 
-    let widthFeet = Math.floor(42.8456376 / 24);
-    let widthInches = Math.floor(((42.8456376/24) - Math.floor(42.8456376 / 24)) * 12)
     let stairKonvaImg = new Konva.Image({
       width: (42.8456376*2),
       height: 80*2,
@@ -356,6 +355,29 @@ class MyCanvas {
         draggable: true,
     });
 
+    stage.add(layer);
+    layer.add(group);
+    this.addText(height, width, group)
+    group.add(stairKonvaImg);
+
+    this.addAnchor(group, 0, 0, 'topLeft');
+    this.addAnchor(group, (width*2), 0, 'topRight');
+    this.addAnchor(group, (width*2), (height*2), 'bottomRight');
+    this.addAnchor(group, 0, (height*2), 'bottomLeft');
+
+    stairImg.onload = function() {
+      stairKonvaImg.image(stairImg)
+      layer.draw();
+    }
+    stairImg.src = "src/images/stairs.svg";
+  }
+
+  addText(height, width, group) {
+    let heightFeet = Math.floor(height / 24);
+    let heightInches = Math.floor(((height/24) - Math.floor(height / 24)) * 12) 
+    let widthFeet = Math.floor(width / 24);
+    let widthInches = Math.floor(((width/24) - Math.floor(width / 24)) * 12)
+
     let heightText = new Konva.Text({
         x: group.x() - 330,
         y: group.y() - 140,
@@ -364,6 +386,7 @@ class MyCanvas {
         fontFamily: 'Lato',
         fill: 'black',
     });
+
     let widthText = new Konva.Text({
         x: group.x() - 265,
         y: group.y() -220,
@@ -373,22 +396,8 @@ class MyCanvas {
         fill: 'black',
     });
 
-    stage.add(layer);
-    layer.add(group);
     group.add(heightText);
     group.add(widthText);
-    group.add(stairKonvaImg);
-
-    this.addAnchor(group, 0, 0, 'topLeft');
-    this.addAnchor(group, (42.8456376*2), 0, 'topRight');
-    this.addAnchor(group, (42.8456376*2), (80*2), 'bottomRight');
-    this.addAnchor(group, 0, (80*2), 'bottomLeft');
-
-    stairImg.onload = function() {
-      stairKonvaImg.image(stairImg)
-      layer.draw();
-    }
-    stairImg.src = "src/images/stairs.svg";
   }
 
       updateAnchor(activeAnchor) {
@@ -431,51 +440,51 @@ class MyCanvas {
         }
       }
       
-      addAnchor(group, x, y, name) {
-        let stage = group.getStage();
-        let layer = group.getLayer();
-        let anchor = new Circle({
-          x: x,
-          y: y,
-          stroke: '#000',
-          fill: 'blue',
-          strokeWidth: 1.5,
-          radius: 4,
-          name: name,
-          draggable: true,
-        });
+    addAnchor(group, x, y, name) {
+      let stage = group.getStage();
+      let layer = group.getLayer();
+      let anchor = new Circle({
+        x: x,
+        y: y,
+        stroke: '#000',
+        fill: 'blue',
+        strokeWidth: 1.5,
+        radius: 4,
+        name: name,
+        draggable: true,
+      });
 
-        anchor.on('dragmove', function () {
-          updateAnchor(this);
-          layer.draw();
-        });
+      anchor.on('dragmove', function () {
+        updateAnchor(this);
+        layer.draw();
+      });
 
-        anchor.on('mousedown touchstart', function () {
-          group.draggable(false);
-          this.moveToTop();
-        });
+      anchor.on('mousedown touchstart', function () {
+        group.draggable(false);
+        this.moveToTop();
+      });
 
-        anchor.on('dragend', function () {
-          group.draggable(true);
-          layer.draw();
-        });
+      anchor.on('dragend', function () {
+        group.draggable(true);
+        layer.draw();
+      });
 
-        // add hover styling
-        anchor.on('mouseover', function () {
-          let layer = this.getLayer();
-          document.body.style.cursor = 'pointer';
-          this.strokeWidth(3);
-          layer.draw();
-        });
+      // add hover styling
+      anchor.on('mouseover', function () {
+        let layer = this.getLayer();
+        document.body.style.cursor = 'pointer';
+        this.strokeWidth(3);
+        layer.draw();
+      });
 
-        anchor.on('mouseout', function () {
-          let layer = this.getLayer();
-          document.body.style.cursor = 'default';
-          this.strokeWidth(2);
-          layer.draw();
-        });
-        group.add(anchor);
-      }
+      anchor.on('mouseout', function () {
+        let layer = this.getLayer();
+        document.body.style.cursor = 'default';
+        this.strokeWidth(2);
+        layer.draw();
+      });
+      group.add(anchor);
+    }
   
   setStrokeAndFill(item){
     item.strokeWidth = this.strokeWidth;
