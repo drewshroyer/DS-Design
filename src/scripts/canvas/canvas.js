@@ -307,26 +307,23 @@ class MyCanvas {
     fireImg.src = "src/images/fire-place.svg";
   }
 
-   drawStairs() {
+  drawStairs() {
     let stairImg = new Image();
     let stairKonvaImg = new Konva.Image({
       width: 42.8456376,
       height: 80,
     });
-
     let group = new Group({
         x: 300,
         y: 200,
         draggable: true,
     });
-
     let layer = new Layer();
     let stage = new Stage({
       container: 'myCanvas',
       width: window.innerWidth,
       height: window.innerHeight,
     });
-
     stage.add(layer);
     layer.add(group);
     group.add(stairKonvaImg);
@@ -338,11 +335,10 @@ class MyCanvas {
 
     stairImg.onload = function() {
       stairKonvaImg.image(stairImg)
-      // stairKonvaImg.show()
       layer.draw();
     }
     stairImg.src = "src/images/stairs.svg";
-    // console.log(true);
+    console.log(true);
   }
 
 
