@@ -15,6 +15,6 @@ Used Technologies:
 * Webpack
 * myCanvas
 
-- [LIVE SITE](http://drewshroyer.com/DS-Design/)
+VIEW THE [LIVE SITE](http://drewshroyer.com/DS-Design/)
 
-- [MY LINKEDIN](https://www.linkedin.com/in/drew-shroyer-861b32a4/)
+[MY LINKEDIN](https://www.linkedin.com/in/drew-shroyer-861b32a4/)
