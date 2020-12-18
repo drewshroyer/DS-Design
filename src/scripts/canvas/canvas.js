@@ -4,14 +4,6 @@ import Konva from 'konva';
 import { Group, Layer, Stage, Circle } from 'konva';
 import Canvg from 'canvg';
 
-const boundsIdentifierObj = {
-  1: 'topLeft', 2: 'topRight', 3: 'bottomRight', 0: 'bottomLeft'
-}
-
-const boundsCenterIdentifierObj = {
-  1: 'topCenter', 2: 'rightCenter', 3: 'bottomCenter', 0: 'leftCenter'
-}
-const LINE = 'line'; 
 
 class MyCanvas {
   constructor(canvasElement) {
@@ -59,7 +51,7 @@ class MyCanvas {
 
     // anchor binding
     this.addAnchor = this.addAnchor.bind(this);
-    this.update = this.update.bind(this);
+    this.updateAnchor = this.updateAnchor.bind(this);
     // this.createAnchors = this.createAnchors.bind(this);
 
      //add double click listener on canvas because tool have no double click listener
@@ -351,9 +343,6 @@ class MyCanvas {
     });
 
       let layer = new Konva.Layer();
-      stage.add(layer);
-      layer.add(group);
-
       let SOURCE = 'src/images/fire-place.svg';
      
       Konva.Image.fromURL(SOURCE, (imageNode) => {
@@ -394,7 +383,7 @@ class MyCanvas {
     stairImg.src = "src/images/stairs.svg";
   }
   
-      update(activeAnchor) {
+      updateAnchor(activeAnchor) {
         let group = activeAnchor.getParent();
 
         let topLeft = group.get('.topLeft')[0];
@@ -450,7 +439,7 @@ class MyCanvas {
         });
 
         anchor.on('dragmove', function () {
-          update(this);
+          updateAnchor(this);
           layer.draw();
         });
 
