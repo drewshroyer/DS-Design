@@ -4,8 +4,6 @@ Based off the styling of Architectural Digest, the AD Design room planner allow 
 
 This modern and minimal app will serve as a tool for room planning and can be fully customizable based on a user's needs. 
 
-- [WIREFRAME](https://wireframe.cc/pro/pp/77f2e95fe382351)
-
 Used Technologies: 
 * JavaScript
 * HTML5
