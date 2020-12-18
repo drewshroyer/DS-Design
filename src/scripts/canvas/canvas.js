@@ -388,7 +388,7 @@ class MyCanvas {
     }
     stairImg.src = "src/images/stairs.svg";
   }
-  
+
       updateAnchor(activeAnchor) {
         let group = activeAnchor.getParent();
 
