@@ -89,7 +89,7 @@ class MyCanvas {
   drawShapes(shapeName){
  
     let stage = new Konva.Stage({
-      container: 'container',
+      container: 'konvaContainer',
       width: window.innerWidth,
       height: window.innerHeight,
     });

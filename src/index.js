@@ -35,6 +35,8 @@ window.addEventListener("DOMContentLoaded", (main) => {
 
    close.onclick = function () {
      modal.style.display = "none";
+     let container = document.getElementById("konvaContainer");
+     container.style.display = 'block';
    };
 
    startPlanningButton.onclick = function () {
@@ -53,9 +55,9 @@ window.addEventListener("DOMContentLoaded", (main) => {
      let inchesWidth = document.getElementById("width-input-inches").value;
      let width = ((feetWidth * 12) + inchesWidth) * .6;
     
-     let container = document.getElementById("container");
+     let container = document.getElementById("konvaContainer");
      container.style.display = 'block';
-     
+
      ctx.strokeStyle = "black";
      ctx.lineWidth = 5;
      ctx.strokeRect(80, 80, width, height);
