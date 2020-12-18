@@ -16,9 +16,9 @@ class MyCanvas {
     this.canvasScaleValue = 1;
     this.tool = new Tool();
     tool.minDistance = 2;
-    
+
     // set up the Konva Stage and Layer 
-    this.stage = new Konva.Stage({
+    this.stage = new Stage({
       container: 'konvaContainer',
       width: window.innerWidth,
       height: window.innerHeight,
