@@ -341,8 +341,10 @@ class MyCanvas {
 
   drawStairs(stage, layer) {
     let stairImg = new Image();
-    let height = Math.floor(80 * 2 / 24);
-    let width = Math.floor(42.8456376 * 2 / 24)
+    let heightFeet = Math.floor(80 / 24);
+    let heightInches = Math.floor(((80/24) - Math.floor(80 / 24)) * 12) 
+    let widthFeet = Math.floor(42.8456376 / 24);
+    let widthInches = Math.floor(((42.8456376/24) - Math.floor(42.8456376 / 24)) * 12)
     let stairKonvaImg = new Konva.Image({
       width: (42.8456376*2),
       height: 80*2,
@@ -355,17 +357,17 @@ class MyCanvas {
     });
 
     let heightText = new Konva.Text({
-        x: group.x() - 320,
+        x: group.x() - 330,
         y: group.y() - 140,
-        text: `${height}'`,
+        text: `${heightFeet}'${heightInches}"`,
         fontSize: 12,
         fontFamily: 'Lato',
         fill: 'black',
     });
     let widthText = new Konva.Text({
-        x: group.x() - 260,
+        x: group.x() - 265,
         y: group.y() -220,
-        text: `${width}'`,
+        text: `${widthFeet}'${widthInches}"`,
         fontSize: 12,
         fontFamily: 'Lato',
         fill: 'black',
