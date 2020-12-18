@@ -42,7 +42,7 @@ class MyCanvas {
 
     // anchor binding
     this.addAnchor = this.addAnchor.bind(this);
-    this.updateAnchor = this.updateAnchor.bind(this);
+    this.update = this.update.bind(this);
     this.addText = this.addText.bind(this);
 
      //add double click listener on canvas because tool have no double click listener
@@ -176,7 +176,7 @@ class MyCanvas {
     queenImg.src = "src/images/queen-bed.svg";
   }
 
-   drawSofa() {
+  drawSofa() {
     let sofaImg = new Image();
     const canvasElement = document.getElementById('myCanvas');
     const ctx = canvasElement.getContext("2d");
@@ -207,7 +207,7 @@ class MyCanvas {
     rugImg.src = "src/images/rug.svg";
   }
 
-   drawRoundRug() {
+  drawRoundRug() {
     let roundRugImg = new Image();
     const canvasElement = document.getElementById('myCanvas');
     const ctx = canvasElement.getContext("2d");
@@ -217,7 +217,7 @@ class MyCanvas {
     roundRugImg.src = "src/images/round-rug.svg";
   }
 
-   drawDining() {
+  drawDining() {
     let diningImg = new Image();
     const canvasElement = document.getElementById('myCanvas');
     const ctx = canvasElement.getContext("2d");
@@ -247,7 +247,7 @@ class MyCanvas {
     tvImg.src = "src/images/tv-cabinent.svg";
   }
 
-   drawArmChair() {
+  drawArmChair() {
     let armChairImg = new Image();
     const canvasElement = document.getElementById('myCanvas');
     const ctx = canvasElement.getContext("2d");
@@ -256,6 +256,7 @@ class MyCanvas {
     }
     armChairImg.src = "src/images/arm-chair.svg";
   }
+
   drawUpholstered() {
     let upImg = new Image();
     const canvasElement = document.getElementById('myCanvas');
@@ -400,7 +401,8 @@ class MyCanvas {
     group.add(widthText);
   }
 
-      updateAnchor(activeAnchor) {
+      update(activeAnchor) {
+        debugger
         let group = activeAnchor.getParent();
 
         let topLeft = group.get('.topLeft')[0];
@@ -455,8 +457,50 @@ class MyCanvas {
       });
 
       anchor.on('dragmove', function () {
-        updateAnchor(this);
+        // console.log(this);
+        // debugger
+        let activeAnchor = this;
+
+        let group = activeAnchor.getParent();
+
+        let topLeft = group.get('.topLeft')[0];
+        let topRight = group.get('.topRight')[0];
+        let bottomRight = group.get('.bottomRight')[0];
+        let bottomLeft = group.get('.bottomLeft')[0];
+        let image = group.get('Image')[0];
+
+        let anchorX = activeAnchor.getX();
+        let anchorY = activeAnchor.getY();
+
+        switch (activeAnchor.getName()) {
+          case 'topLeft':
+            topRight.y(anchorY);
+            bottomLeft.x(anchorX);
+            break;
+          case 'topRight':
+            topLeft.y(anchorY);
+            bottomRight.x(anchorX);
+            break;
+          case 'bottomRight':
+            bottomLeft.y(anchorY);
+            topRight.x(anchorX);
+            break;
+          case 'bottomLeft':
+            bottomRight.y(anchorY);
+            topLeft.x(anchorX);
+            break;
+        }
+        image.position(topLeft.position());
+
+        let width = topRight.getX() - topLeft.getX();
+        let height = bottomLeft.getY() - topLeft.getY();
+        if (width && height) {
+          image.width(width);
+          image.height(height);
+        }
+
         layer.draw();
+
       });
 
       anchor.on('mousedown touchstart', function () {
