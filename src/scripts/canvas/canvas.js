@@ -52,6 +52,7 @@ class MyCanvas {
     this.drawCoffeeTable = this.drawCoffeeTable.bind(this);
     this.drawFirePlace = this.drawFirePlace.bind(this);
     this.drawStairs = this.drawStairs.bind(this);
+    this.drawSofa = this.drawSofa.bind(this);
 
     //general method binding
     this.getCenterPosition = this.getCenterPosition.bind(this);
@@ -114,6 +115,9 @@ class MyCanvas {
       case SHAPES.RUG:
         this.drawRug();
         break;
+      case SHAPES.SOFA:
+        this.drawSofa();
+        break;
       case SHAPES.ROUNDRUG:
         this.drawRoundRug();
         break;
@@ -129,7 +133,7 @@ class MyCanvas {
       case SHAPES.ARMCHAIR:
         this.drawArmChair();
         break;
-         case SHAPES.UPHOLSTERED:
+      case SHAPES.UPHOLSTERED:
         this.drawUpholstered();
         break;
       case SHAPES.ENDTABLE:
@@ -162,6 +166,16 @@ class MyCanvas {
       ctx.drawImage(queenImg, 300, 300);
     }
     queenImg.src = "src/images/queen-bed.svg";
+  }
+
+   drawSofa() {
+    let sofaImg = new Image();
+    const canvasElement = document.getElementById('myCanvas');
+    const ctx = canvasElement.getContext("2d");
+    sofaImg.onload = function() {
+      ctx.drawImage(sofaImg, 300, 300);
+    }
+    sofaImg.src = "src/images/sofa.svg";
   }
 
   drawTwin() {
@@ -243,7 +257,7 @@ class MyCanvas {
     upImg.src = "src/images/upholstered-chair.svg";
   }
 
-    drawEndTable() {
+  drawEndTable() {
     let endImg = new Image();
     const canvasElement = document.getElementById('myCanvas');
     const ctx = canvasElement.getContext("2d");
@@ -253,7 +267,7 @@ class MyCanvas {
     endImg.src = "src/images/end-table.svg";
   }
 
-   drawRoundTable() {
+  drawRoundTable() {
     let roundImg = new Image();
     const canvasElement = document.getElementById('myCanvas');
     const ctx = canvasElement.getContext("2d");
@@ -263,7 +277,7 @@ class MyCanvas {
     roundImg.src = "src/images/round-table.svg";
   }
 
-   drawLoveSeat() {
+  drawLoveSeat() {
     let loveImg = new Image();
     const canvasElement = document.getElementById('myCanvas');
     const ctx = canvasElement.getContext("2d");
@@ -294,45 +308,41 @@ class MyCanvas {
   }
 
    drawStairs() {
-    // const canvasElement = document.getElementById('myCanvas');
-    // const ctx = canvasElement.getContext("Konva");
-     let stairImg = new Image();
-      let yodaImg = new Konva.Image({
-        width: 42.8456376,
-        height: 80,
-      });
+    let stairImg = new Image();
+    let stairKonvaImg = new Konva.Image({
+      width: 42.8456376,
+      height: 80,
+    });
 
     let group = new Group({
         x: 300,
         y: 200,
         draggable: true,
     });
-        // debugger
-        let layer = new Layer();
-        debugger
-        let stage = new Stage({
-          container: 'myCanvas',
-          width: window.innerWidth,
-          height: window.innerHeight,
-        });
-        //  debugger    
-        stage.add(layer);
-        layer.add(group);
-        group.add(yodaImg);
-        // debugger
-        this.addAnchor(group, 0, 0, 'topLeft');
-        this.addAnchor(group, 42.8456376, 0, 'topRight');
-        this.addAnchor(group, 42.8456376, 80, 'bottomRight');
-        this.addAnchor(group, 0, 80, 'bottomLeft');
+
+    let layer = new Layer();
+    let stage = new Stage({
+      container: 'myCanvas',
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    group.add(stairKonvaImg);
+
+    this.addAnchor(group, 0, 0, 'topLeft');
+    this.addAnchor(group, 42.8456376, 0, 'topRight');
+    this.addAnchor(group, 42.8456376, 80, 'bottomRight');
+    this.addAnchor(group, 0, 80, 'bottomLeft');
 
     stairImg.onload = function() {
-      yodaImg.image(stairImg)
+      stairKonvaImg.image(stairImg)
+      // stairKonvaImg.show()
       layer.draw();
     }
     stairImg.src = "src/images/stairs.svg";
-    console.log(true);
-  
-   ctx.drawImage(yodaImg, 300, 200);
+    // console.log(true);
   }
 
 
