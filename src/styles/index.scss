@@ -197,7 +197,7 @@ h2:hover {
     transform: translate(-50%, -50%);
     width: 400px;
     height: 350px;
-    z-index: 1;
+    z-index: 2;
     color: black;
     background-color: white;
     padding: 50px 150px 100px 150px;
@@ -360,6 +360,7 @@ h2:hover {
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+    z-index: 2;
 }
 
   #instruction-container-close {
@@ -367,11 +368,14 @@ h2:hover {
   }
 
   .tip-modal-title {
-    width: 100%;
-    font-size: 32px;
+    font-family: Didonesque;
+    letter-spacing: 1px;
+    width: 90%;
+    font-size: 28px;
     font-weight: 300;
-    margin-top: 26px;
+    margin: 25px 10px 5px 15px;
     text-align: center;
+    border-bottom: 1px solid black;
 }
 
 .tips-close {
@@ -390,7 +394,8 @@ ul {
 }
 ul.tips-dashed {
     list-style-type: none;
-    margin: 0px 0px 0px -10px;
+    margin: 5px 0px 25px -15px;
+    overflow: scroll;
 }
 ul.tips-dashed > li {
   text-indent: -5px;
@@ -400,6 +405,8 @@ ul.tips-dashed > li:before {
   text-indent: -5px;
 }
 li {
-    font-size: 18px;
-    padding: 5px 0px 5px 0px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 5px 15px 5px 0px;
 }

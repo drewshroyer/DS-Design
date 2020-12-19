@@ -69,11 +69,16 @@ window.addEventListener("DOMContentLoaded", (main) => {
    })
 
    let closeTipsX = document.getElementById("instruction-container-close");
-   let tipsContainer = document.getElementById("instruction-container")
+   let tipsContainer = document.getElementById("instruction-container");
 
    closeTipsX.onclick = function () {
-     tipsContainer.style.display = "none";
+     tipsContainer.style.display = "none"
    };
 
+   let openTipsBtn = document.getElementById("tips-open");
+
+   openTipsBtn.onclick = function () {
+     tipsContainer.style.display = "flex"
+   };
   
 });
