@@ -1,7 +1,7 @@
 import { SHAPES } from "../util/constants";
-import paper, { Project, tool, Tool, Rectangle, Point } from 'paper';
 import Konva from 'konva';
 import { Group, Layer, Stage, Circle } from 'konva';
+import paper, { Project, tool, Tool} from 'paper';
 
 class MyCanvas {
   constructor(canvasElement) {
@@ -52,7 +52,7 @@ class MyCanvas {
     this.update = this.update.bind(this);
     this.addText = this.addText.bind(this);
 
-     //add double click listener on canvas because tool have no double click listener
+    //add double click listener on canvas because tool have no double click listener
     this.canvasElement.addEventListener("dblclick", this.onToolDoubleClick);
 
     //set right menu liteners
@@ -91,7 +91,7 @@ class MyCanvas {
     downloadLinkElement.download = fileName;
     downloadLinkElement.href = url;
     downloadLinkElement.click();
- }
+  }
 
   drawShapes(shapeName){
 
@@ -304,13 +304,12 @@ class MyCanvas {
     layer.add(tr1);
     group.add(rugKonvaImg);
 
-     this.addTransformerFunction(tr1, group, stage, layer);;
+    this.addTransformerFunction(tr1, group, stage, layer);;
 
     rugImg.onload = function() {
       rugKonvaImg.image(rugImg)
       layer.draw();
     }
- 
     rugImg.src = "src/images/rug.svg";
   }
 
