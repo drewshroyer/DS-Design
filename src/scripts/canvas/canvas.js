@@ -24,6 +24,8 @@ class MyCanvas {
       height: window.innerHeight,
     });
     this.layer = new Layer();
+    // add transformers to each binding
+    this.addTransformerFunction = this.addTransformerFunction.bind(this);
 
     //shapes method binding
     this.drawShapes = this.drawShapes.bind(this);
@@ -190,101 +192,7 @@ class MyCanvas {
     layer.add(tr1);
     group.add(queenKonvaImg);
 
-    let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
+  this.addTransformerFunction(tr1, group, stage, layer);;
 
     queenImg.onload = function() {
       queenKonvaImg.image(queenImg)
@@ -321,101 +229,7 @@ class MyCanvas {
     layer.add(tr1);
     group.add(sofaKonvaImg);
 
-    let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
+    this.addTransformerFunction(tr1, group, stage, layer);
 
     sofaImg.onload = function() {
       sofaKonvaImg.image(sofaImg)
@@ -453,7 +267,527 @@ class MyCanvas {
     layer.add(tr);
     group.add(KonvaImg);
 
-    let selectionRectangle = new Konva.Rect({
+    this.addTransformerFunction(tr, group, stage, layer);
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/twin-bed.svg";
+  }
+
+  drawRug(stage, layer) {
+    let height = 48.17;
+    let width = 100;
+    let rugImg = new Image();
+
+    let rugKonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(rugKonvaImg);
+
+     this.addTransformerFunction(tr1, group, stage, layer);;
+
+    rugImg.onload = function() {
+      rugKonvaImg.image(rugImg)
+      layer.draw();
+    }
+ 
+    rugImg.src = "src/images/rug.svg";
+  }
+
+  drawRoundRug(stage, layer) {
+    let height = 80;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+     let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/round-rug.svg";
+  }
+
+  drawDining(stage, layer) {
+    let height = 80;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/dining-table.svg";
+  }
+
+  drawOffice(stage, layer) {
+   let height = 47.0951157;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+     this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/office-desk.svg";
+  }
+
+  drawTVCabinent(stage, layer) {
+    let height = 23.759;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+   this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/tv-cabinent.svg";
+  }
+
+  drawArmChair(stage, layer) {
+    let height = 80;
+    let width = 70.176;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+     this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/arm-chair.svg";
+  }
+
+  drawUpholstered(stage, layer) {
+   let height = 80;
+    let width = 70.176;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+     this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/upholstered-chair.svg";
+  }
+
+  drawEndTable(stage, layer) {
+    let height = 40;
+    let width = 38.3507;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/end-table.svg";
+  }
+
+  drawRoundTable(stage, layer) {
+    let height = 80;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/round-table.svg";
+  }
+
+  drawLoveSeat(stage, layer) {
+    let height = 47.7246654;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/love-seat.svg";
+  }
+
+  drawCoffeeTable(stage, layer) {
+    let height = 43.0769231;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+     this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/coffee-table.svg";
+  }
+
+  drawFirePlace(stage, layer) {
+    let height = 42.8456376;
+    let width = 80;
+    let fireImg = new Image();
+
+    let fireKonvaImg = new Konva.Image({
+      width: 80*2,
+      height: 80,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(fireKonvaImg);
+
+   this.addTransformerFunction(tr1, group, stage, layer);;
+
+    fireImg.onload = function() {
+      fireKonvaImg.image(fireImg)
+      layer.draw();
+    }
+    fireImg.src = "src/images/fire-place.svg";    
+  }
+
+  drawStairs(stage, layer) {
+    let height = 80;
+    let width = 42.8456376;
+    let stairImg = new Image();
+    let stairKonvaImg = new Konva.Image({
+      width: (42.8456376*2),
+      height: 80*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(stairKonvaImg);
+
+     this.addTransformerFunction(tr1, group, stage, layer);;
+
+    stairImg.onload = function() {
+      stairKonvaImg.image(stairImg)
+      layer.draw();
+    }
+
+    stairImg.src = "src/images/stairs.svg";
+  }
+
+  addText(height, width, group) {
+    let heightFeet = Math.floor(height / 24);
+    let heightInches = Math.floor(((height/24) - Math.floor(height / 24)) * 12) 
+    let widthFeet = Math.floor(width / 24);
+    let widthInches = Math.floor(((width/24) - Math.floor(width / 24)) * 12)
+
+    let heightText = new Konva.Text({
+        x: group.x() - 330,
+        y: group.y() - 140,
+        text: `${heightFeet}'${heightInches}"`,
+        fontSize: 12,
+        fontFamily: 'Lato',
+        fill: 'black',
+    });
+
+    let widthText = new Konva.Text({
+        x: group.x() - 265,
+        y: group.y() -220,
+        text: `${widthFeet}'${widthInches}"`,
+        fontSize: 12,
+        fontFamily: 'Lato',
+        fill: 'black',
+    });
+
+    group.add(heightText);
+    group.add(widthText);
+  }
+
+  addTransformerFunction(tr, group, stage, layer) {
+  let selectionRectangle = new Konva.Rect({
         fill: 'rgba(0,0,255,0.5)',
       });
       group.add(selectionRectangle);
@@ -548,1786 +882,47 @@ class MyCanvas {
         }
         layer.draw();
       });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/twin-bed.svg";
-  }
-
-  drawRug(stage, layer) {
-    let height = 48.17;
-    let width = 100;
-    let rugImg = new Image();
-
-    let rugKonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(rugKonvaImg);
-
-    let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    rugImg.onload = function() {
-      rugKonvaImg.image(rugImg)
-      layer.draw();
-    }
- 
-    rugImg.src = "src/images/rug.svg";
-  }
-
-  drawRoundRug(stage, layer) {
-    let height = 80;
-    let width = 80;
-    let Img = new Image();
-
-    let KonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-     let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(KonvaImg);
-
-    let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr.nodes().concat([e.target]);
-          tr.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/round-rug.svg";
-  }
-
-  drawDining(stage, layer) {
-    let height = 80;
-    let width = 80;
-    let Img = new Image();
-
-    let KonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(KonvaImg);
-
-    let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/dining-table.svg";
-  }
-
-  drawOffice(stage, layer) {
-   let height = 47.0951157;
-    let width = 80;
-    let Img = new Image();
-
-    let KonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(KonvaImg);
-
-    let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/office-desk.svg";
-  }
-
-  drawTVCabinent(stage, layer) {
-    let height = 23.759;
-    let width = 80;
-    let Img = new Image();
-
-    let KonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(KonvaImg);
-
-  let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/tv-cabinent.svg";
-  }
-
-  drawArmChair(stage, layer) {
-    let height = 80;
-    let width = 70.176;
-    let Img = new Image();
-
-    let KonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(KonvaImg);
-
-    let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/arm-chair.svg";
-  }
-
-  drawUpholstered(stage, layer) {
-   let height = 80;
-    let width = 70.176;
-    let Img = new Image();
-
-    let KonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(KonvaImg);
-
-    let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/upholstered-chair.svg";
-  }
-
-  drawEndTable(stage, layer) {
-    let height = 40;
-    let width = 38.3507;
-    let Img = new Image();
-
-    let KonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(KonvaImg);
-
-   let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/end-table.svg";
-  }
-
-  drawRoundTable(stage, layer) {
-    let height = 80;
-    let width = 80;
-    let Img = new Image();
-
-    let KonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(KonvaImg);
-
-   let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/round-table.svg";
-  }
-
-  drawLoveSeat(stage, layer) {
-    let height = 47.7246654;
-    let width = 80;
-    let Img = new Image();
-
-    let KonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(KonvaImg);
-
-   let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/love-seat.svg";
-  }
-
-  drawCoffeeTable(stage, layer) {
-    let height = 43.0769231;
-    let width = 80;
-    let Img = new Image();
-
-    let KonvaImg = new Konva.Image({
-      width: width*2,
-      height: height*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(KonvaImg);
-
-    let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    Img.onload = function() {
-      KonvaImg.image(Img)
-      layer.draw();
-    }
-    Img.src = "src/images/coffee-table.svg";
-  }
-
-  drawFirePlace(stage, layer) {
-    let height = 42.8456376;
-    let width = 80;
-    let fireImg = new Image();
-
-    let fireKonvaImg = new Konva.Image({
-      width: 80*2,
-      height: 80,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(fireKonvaImg);
-
-  let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    fireImg.onload = function() {
-      fireKonvaImg.image(fireImg)
-      layer.draw();
-    }
-    fireImg.src = "src/images/fire-place.svg";    
-  }
-
-  drawStairs(stage, layer) {
-    let height = 80;
-    let width = 42.8456376;
-    let stairImg = new Image();
-    let stairKonvaImg = new Konva.Image({
-      width: (42.8456376*2),
-      height: 80*2,
-    });
-    
-    let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
-    });
-
-    let tr1 = new Konva.Transformer({
-      nodes: [group],
-      centeredScaling: false,
-      rotationSnaps: [0, 90, 180, 270],
-      resizeEnabled: true,
-    });
-
-    stage.add(layer);
-    layer.add(group);
-    layer.add(tr1);
-    group.add(stairKonvaImg);
-
-    let selectionRectangle = new Konva.Rect({
-        fill: 'rgba(0,0,255,0.5)',
-      });
-      group.add(selectionRectangle);
-
-      let x1, y1, x2, y2;
-      stage.on('mousedown touchstart', (e) => {
-        // do nothing if we mousedown on eny shape
-        if (e.target !== stage) {
-          return;
-        }
-        x1 = stage.getPointerPosition().x;
-        y1 = stage.getPointerPosition().y;
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.visible(true);
-        selectionRectangle.width(0);
-        selectionRectangle.height(0);
-        layer.draw();
-      });
-
-      stage.on('mousemove touchmove', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        x2 = stage.getPointerPosition().x;
-        y2 = stage.getPointerPosition().y;
-
-        selectionRectangle.setAttrs({
-          x: Math.min(x1, x2),
-          y: Math.min(y1, y2),
-          width: Math.abs(x2 - x1),
-          height: Math.abs(y2 - y1),
-        });
-        layer.batchDraw();
-      });
-
-      stage.on('mouseup touchend', () => {
-        // no nothing if we didn't start selection
-        if (!selectionRectangle.visible()) {
-          return;
-        }
-        // update visibility in timeout, so we can check it in click event
-        setTimeout(() => {
-          selectionRectangle.visible(false);
-          layer.batchDraw();
-        });
-
-        let shapes = stage.find('.rect').toArray();
-        let box = selectionRectangle.getClientRect();
-        let selected = shapes.filter((shape) =>
-          Konva.Util.haveIntersection(box, shape.getClientRect())
-        );
-        tr1.nodes(selected);
-        layer.batchDraw();
-      });
-
-      // clicks should select/deselect shapes
-      stage.on('click tap', function (e) {
-        // if we are selecting with rect, do nothing
-        if (selectionRectangle.visible()) {
-          return;
-        }
-
-        // if click on empty area - remove all selections
-        if (e.target === stage) {
-          tr1.nodes([]);
-          layer.draw();
-          return;
-        }
-
-        // do we pressed shift or ctrl?
-        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
-        const isSelected = tr1.nodes().indexOf(e.target) >= 0;
-
-        if (!metaPressed && !isSelected) {
-          // if no key pressed and the node is not selected
-          // select just one
-          tr1.nodes([e.target]);
-        } else if (metaPressed && isSelected) {
-          // if we pressed keys and node was selected
-          // we need to remove it from selection:
-          const nodes = tr1.nodes().slice(); // use slice to have new copy of array
-          // remove node from array
-          nodes.splice(nodes.indexOf(e.target), 1);
-          tr1.nodes(nodes);
-        } else if (metaPressed && !isSelected) {
-          // add the node into selection
-          const nodes = tr1.nodes().concat([e.target]);
-          tr1.nodes(nodes);
-        }
-        layer.draw();
-      });
-
-    stairImg.onload = function() {
-      stairKonvaImg.image(stairImg)
-      layer.draw();
-    }
-
-    stairImg.src = "src/images/stairs.svg";
-  }
-
-  addText(height, width, group) {
-    let heightFeet = Math.floor(height / 24);
-    let heightInches = Math.floor(((height/24) - Math.floor(height / 24)) * 12) 
-    let widthFeet = Math.floor(width / 24);
-    let widthInches = Math.floor(((width/24) - Math.floor(width / 24)) * 12)
-
-    let heightText = new Konva.Text({
-        x: group.x() - 330,
-        y: group.y() - 140,
-        text: `${heightFeet}'${heightInches}"`,
-        fontSize: 12,
-        fontFamily: 'Lato',
-        fill: 'black',
-    });
-
-    let widthText = new Konva.Text({
-        x: group.x() - 265,
-        y: group.y() -220,
-        text: `${widthFeet}'${widthInches}"`,
-        fontSize: 12,
-        fontFamily: 'Lato',
-        fill: 'black',
-    });
-
-    group.add(heightText);
-    group.add(widthText);
-  }
-
-      update(activeAnchor) {
-        debugger
-        let group = activeAnchor.getParent();
-
-        let topLeft = group.get('.topLeft')[0];
-        let topRight = group.get('.topRight')[0];
-        let bottomRight = group.get('.bottomRight')[0];
-        let bottomLeft = group.get('.bottomLeft')[0];
-        let image = group.get('Image')[0];
-
-        let anchorX = activeAnchor.getX();
-        let anchorY = activeAnchor.getY();
-
-        switch (activeAnchor.getName()) {
-          case 'topLeft':
-            topRight.y(anchorY);
-            bottomLeft.x(anchorX);
-            break;
-          case 'topRight':
-            topLeft.y(anchorY);
-            bottomRight.x(anchorX);
-            break;
-          case 'bottomRight':
-            bottomLeft.y(anchorY);
-            topRight.x(anchorX);
-            break;
-          case 'bottomLeft':
-            bottomRight.y(anchorY);
-            topLeft.x(anchorX);
-            break;
-        }
-        image.position(topLeft.position());
-
-        let width = topRight.getX() - topLeft.getX();
-        let height = bottomLeft.getY() - topLeft.getY();
-        if (width && height) {
-          image.width(width);
-          image.height(height);
-        }
+   }
+
+    update(activeAnchor) {
+      let group = activeAnchor.getParent();
+
+      let topLeft = group.get('.topLeft')[0];
+      let topRight = group.get('.topRight')[0];
+      let bottomRight = group.get('.bottomRight')[0];
+      let bottomLeft = group.get('.bottomLeft')[0];
+      let image = group.get('Image')[0];
+
+      let anchorX = activeAnchor.getX();
+      let anchorY = activeAnchor.getY();
+
+      switch (activeAnchor.getName()) {
+        case 'topLeft':
+          topRight.y(anchorY);
+          bottomLeft.x(anchorX);
+          break;
+        case 'topRight':
+          topLeft.y(anchorY);
+          bottomRight.x(anchorX);
+          break;
+        case 'bottomRight':
+          bottomLeft.y(anchorY);
+          topRight.x(anchorX);
+          break;
+        case 'bottomLeft':
+          bottomRight.y(anchorY);
+          topLeft.x(anchorX);
+          break;
       }
+      image.position(topLeft.position());
+
+      let width = topRight.getX() - topLeft.getX();
+      let height = bottomLeft.getY() - topLeft.getY();
+      if (width && height) {
+        image.width(width);
+        image.height(height);
+      }
+    }
       
     addAnchor(group, x, y, name) {
       let stage = group.getStage();
@@ -2422,7 +1017,6 @@ class MyCanvas {
     item.strokeColor = this.strokeColor;
     item.fillColor = this.fillColor;
   }
-
 }
 
 export default MyCanvas;

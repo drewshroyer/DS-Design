@@ -47,7 +47,6 @@ window.addEventListener("DOMContentLoaded", (main) => {
 
    startPlanningButton.addEventListener("click", function defineRoom(event) {
      event.preventDefault();
-     let startPlanning = document.getElementById("submit-dimension-button");
      let feetHeight = document.getElementById("height-input-feet").value;
      let inchesHeight = document.getElementById("height-input-inches").value;
      let height = ((feetHeight * 12) + inchesHeight) * .5;
@@ -68,7 +67,4 @@ window.addEventListener("DOMContentLoaded", (main) => {
      modal.style.display = "none";
    })
 
-
-
 });
-
