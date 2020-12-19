@@ -731,9 +731,9 @@ class MyCanvas {
     });
     
     let group = new Group({
-        x: 300,
-        y: 200,
-        draggable: true,
+      x: 300,
+      y: 200,
+      draggable: true,
     });
 
     let tr1 = new Konva.Transformer({
@@ -748,7 +748,7 @@ class MyCanvas {
     layer.add(tr1);
     group.add(stairKonvaImg);
 
-     this.addTransformerFunction(tr1, group, stage, layer);;
+    this.addTransformerFunction(tr1, group, stage, layer);;
 
     stairImg.onload = function() {
       stairKonvaImg.image(stairImg)

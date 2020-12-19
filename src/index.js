@@ -36,7 +36,7 @@ window.addEventListener("DOMContentLoaded", (main) => {
    close.onclick = function () {
      modal.style.display = "none";
      let container = document.getElementById("konvaContainer");
-    container.style.display = 'block';
+     container.style.display = 'block';
    };
 
    startPlanningButton.onclick = function () {
@@ -62,9 +62,18 @@ window.addEventListener("DOMContentLoaded", (main) => {
      ctx.strokeRect(80, 80, width, height);
 
      ctx.font = "18px Lato";
+     ctx.fillStyle = "steelblue"
      ctx.fillText(feetWidth+"'"+inchesWidth+"''", 60+(width/2), 70);
      ctx.fillText(feetHeight+"'"+inchesHeight+"''", 20, 60+(height/2));
      modal.style.display = "none";
    })
 
+   let closeTipsX = document.getElementById("instruction-container-close");
+   let tipsContainer = document.getElementById("instruction-container")
+
+   closeTipsX.onclick = function () {
+     tipsContainer.style.display = "none";
+   };
+
+  
 });

@@ -28,6 +28,18 @@ h1 {
     bottom: 0;
 }
 
+#instruction-container {
+    position: absolute;
+    right: 3vw;
+    top: 25vh;
+    height: 50vh;
+    width: 16vw;
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
 .DS-header {
     font-family: Didonesque;
     font-size: 32px;
@@ -195,6 +207,7 @@ h2:hover {
     flex-direction: column;
     justify-content: center;
     align-items: space-between;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 .entry-modal-title {
@@ -332,3 +345,61 @@ h2:hover {
 
 .canvas-menu-img:hover {
   transform: scale(1.1); }
+
+#instruction-container {
+    position: absolute;
+    right: 3vw;
+    top: 25vh;
+    height: 50vh;
+    width: 16vw;
+    background-color: #dddddd;
+    color: black;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+  #instruction-container-close {
+      padding-right: 7px;
+  }
+
+  .tip-modal-title {
+    width: 100%;
+    font-size: 32px;
+    font-weight: 300;
+    margin-top: 26px;
+    text-align: center;
+}
+
+.tips-close {
+    color: black;
+    float: right;
+    font-size: 24px;
+    font-weight: 400;
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    cursor: pointer;
+}
+
+ul {
+  margin: 0;
+}
+ul.tips-dashed {
+    list-style-type: none;
+    margin: 0px 0px 0px -10px;
+}
+ul.tips-dashed > li {
+  text-indent: -5px;
+}
+ul.tips-dashed > li:before {
+  content: "-";
+  text-indent: -5px;
+}
+li {
+    font-size: 18px;
+    padding: 5px 0px 5px 0px;
+}
