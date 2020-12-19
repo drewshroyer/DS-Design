@@ -63,8 +63,8 @@ window.addEventListener("DOMContentLoaded", (main) => {
      ctx.strokeRect(80, 80, width, height);
 
      ctx.font = "18px Lato";
-     ctx.fillText(feetHeight+"'"+inchesHeight+"''", 60+(width/2), 70);
-     ctx.fillText(feetWidth+"'"+inchesWidth+"''", 20, 60+(height/2));
+     ctx.fillText(feetWidth+"'"+inchesWidth+"''", 60+(width/2), 70);
+     ctx.fillText(feetHeight+"'"+inchesHeight+"''", 20, 60+(height/2));
      modal.style.display = "none";
    })
 
