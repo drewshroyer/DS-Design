@@ -2,6 +2,7 @@
   "name": "js_project_skeleton",
   "version": "1.0.0",
   "description": "skeleton for new JS project",
+  "homepage": "http://drewshroyer.com/DS-Design/",
   "main": "index.js",
   "browserslist": [
     "last 1 version",
