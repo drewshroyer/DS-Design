@@ -23,6 +23,7 @@ class MyCanvas {
       width: window.innerWidth,
       height: window.innerHeight,
     });
+
     this.layer = new Layer();
     // add transformers to each binding
     this.addTransformerFunction = this.addTransformerFunction.bind(this);
@@ -1016,6 +1017,6 @@ class MyCanvas {
     item.strokeColor = this.strokeColor;
     item.fillColor = this.fillColor;
   }
-}
 
+}
 export default MyCanvas;
