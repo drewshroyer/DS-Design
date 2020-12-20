@@ -48,7 +48,8 @@ class MyCanvas {
     this.drawFirePlace = this.drawFirePlace.bind(this);
     this.drawStairs = this.drawStairs.bind(this);
     this.drawSofa = this.drawSofa.bind(this);
-
+    // this.drawRightDoor = this.drawRightDoor.bind(this);
+    this.drawLeftDoor = this.drawLeftDoor.bind(this);
     // anchor binding
     this.addAnchor = this.addAnchor.bind(this);
     this.update = this.update.bind(this);
@@ -142,6 +143,12 @@ class MyCanvas {
         break;
       case SHAPES.FIREPLACE:
         this.drawFirePlace(this.stage, this.layer);
+        break;
+      case SHAPES.DOORRIGHT:
+        this.drawRightDoor(this.stage, this.layer);
+        break;
+      case SHAPES.DOORLEFT:
+        this.drawLeftDoor(this.stage, this.layer);
         break;
       case SHAPES.STAIRS:
         this.drawStairs(this.stage, this.layer);
@@ -771,6 +778,43 @@ class MyCanvas {
     }
 
     stairImg.src = "src/images/stairs.svg";
+  }
+
+  drawLeftDoor(stage, layer) {
+    let height = 80;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr, group, stage, layer);
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/door-left.svg";
   }
 
   addText(height, width, group) {
