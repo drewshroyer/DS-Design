@@ -412,6 +412,7 @@ li {
 }
 
 #delete-object-button {
+    display: none;
     position: absolute;
     z-index: 2;
     right: 2vw;
