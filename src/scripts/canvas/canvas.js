@@ -27,7 +27,8 @@ class MyCanvas {
     this.layer = new Layer();
     // add transformers to each binding
     this.addTransformerFunction = this.addTransformerFunction.bind(this);
-
+    // creates the delete function 
+    this.addDeleteFunction = this.addDeleteFunction.bind(this);
     //shapes method binding
     this.drawShapes = this.drawShapes.bind(this);
     // furniture elements binding
@@ -188,6 +189,12 @@ class MyCanvas {
       resizeEnabled: true,
     });
     
+    // let deleteButton = new Konva.Circle({
+    //     radius: 10,
+    //     fill: 'red'
+    // });
+
+    // tr1.add(deleteButton);
     stage.add(layer);
     layer.add(group);
     layer.add(tr1);
@@ -200,6 +207,14 @@ class MyCanvas {
       layer.draw();
     }
     queenImg.src = "src/images/queen-bed.svg";
+    this.addDeleteFunction();
+  }
+
+  addDeleteFunction() {
+    document.getElementById('delete-object-button').addEventListener('click', () => {
+      currentShape.destroy();
+      layer.draw();
+    });
   }
 
   drawSofa(stage, layer) {

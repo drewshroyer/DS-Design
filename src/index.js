@@ -81,4 +81,10 @@ window.addEventListener("DOMContentLoaded", (main) => {
      tipsContainer.style.display = "flex"
    };
   
+    document.getElementById('delete-object-button').addEventListener('click', () => {
+      const tr = MyCanvas.layer.find('Group').toArray().find(group => group.nodes()[0] === currentShape);
+      group.destroy();
+      currentShape.destroy();
+      MyCanvas.layer.draw();
+   });
 });

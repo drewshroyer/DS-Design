@@ -410,3 +410,15 @@ li {
     letter-spacing: 1px;
     padding: 5px 15px 5px 0px;
 }
+
+#delete-object-button {
+    position: absolute;
+    z-index: 2;
+    right: 2vw;
+    bottom: 2vh;
+    background-color: #dddddd;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+    cursor: pointer;
+}
