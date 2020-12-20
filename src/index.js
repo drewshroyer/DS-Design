@@ -1,4 +1,4 @@
-import "./styles/index.scss";
+import "./styles/index.css";
 import Sidebar from "./scripts/sidebar/sidebar";
 import sidebarData from "./scripts/util/sidebar_data";
 import MyCanvas from "./scripts/canvas/canvas";
