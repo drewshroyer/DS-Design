@@ -322,7 +322,7 @@ h2:hover {
     text-transform: uppercase;
     font-size: 12px;
     transition: 1s;
-    z-index: -2;
+    z-index: 0;
 }
 
 .sidebar-category-shapes-li:hover {
