@@ -290,10 +290,10 @@ h2:hover {
 }
 
 .sidebar-category-title {
-    display: flex;
+      display: flex;
     justify-content: flex-start;
     align-items: center;
-    width: 20%;
+    width: 17%;
     height: 5vh;
     position: fixed;
     font-size: 16px;
@@ -302,7 +302,7 @@ h2:hover {
     letter-spacing: 1px;
     margin-top: 0px;
     color: black;
-    z-index: -1;
+    z-index: 0;
 }
 
 .sidebar-category-shapes-ul {
@@ -323,6 +323,7 @@ h2:hover {
     text-transform: uppercase;
     font-size: 12px;
     transition: 1s;
+    z-index: -2;
 }
 
 .sidebar-category-shapes-li:hover {
