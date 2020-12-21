@@ -268,8 +268,7 @@ h2:hover {
     color: black;
     background-color: white;
     border-bottom: 2px solid black;
-         cursor: pointer;
-
+    cursor: pointer;
 }
 
 .close {
