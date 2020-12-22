@@ -1,55 +1,24 @@
-import "./styles/index.scss";
+import "./styles/index.css";
 import Sidebar from "./scripts/sidebar/sidebar";
 import sidebarData from "./scripts/util/sidebar_data";
-import DrawCanvas from "./scripts/canvas/canvas";
+import MyCanvas from "./scripts/canvas/canvas";
 
 window.addEventListener("DOMContentLoaded", (main) => {
-//   const canvas = document.getElementById("canvas");
-//   const ctx = canvas.getContext("2d");
 
-  const canvas = document.getElementById("drawCanvas");
-  const drawCanvas = new DrawCanvas(canvas);
-  const ctx = canvas.getContext("2d");
+  const canvasElement = document.getElementById('myCanvas');
+  const myCanvas = new MyCanvas(canvasElement);
+  const ctx = canvasElement.getContext("2d");
 
   const sidebarElement = document.getElementById("section-content-sidebar");
   const sidebar = new Sidebar(
     sidebarData[0],
     sidebarElement,
-    drawCanvas.drawShapes
+    myCanvas.drawShapes
   );
 
-  canvas.height = window.innerHeight;
-  canvas.width = window.innerWidth;
+  myCanvas.height = window.innerHeight;
+  myCanvas.width = window.innerWidth;
 
-  let painting = false;
-
-  function startPosition() {
-    painting = true;
-  }
-
-  function finishPosition() {
-    painting = false;
-    ctx.beginPath();
-  }
-
-  function scribble(e) {
-    if (!painting) return;
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "blue";
-
-    ctx.lineTo(e.clientX, e.clientY);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(e.clientX, e.clientY);
-  }
-
-  canvas.addEventListener("mousedown", startPosition);
-  canvas.addEventListener("mouseup", finishPosition);
-  canvas.addEventListener("mousemove", scribble);
-
-//    const canvas = document.getElementById("canvas");
-//    const ctx = canvas.getContext("2d");
    let modal = document.getElementById("myModal");
    let btn = document.getElementById("myBtn");
    let close = document.getElementsByClassName("close")[0];
@@ -66,6 +35,8 @@ window.addEventListener("DOMContentLoaded", (main) => {
 
    close.onclick = function () {
      modal.style.display = "none";
+     let container = document.getElementById("konvaContainer");
+     container.style.display = 'block';
    };
 
    startPlanningButton.onclick = function () {
@@ -76,15 +47,44 @@ window.addEventListener("DOMContentLoaded", (main) => {
 
    startPlanningButton.addEventListener("click", function defineRoom(event) {
      event.preventDefault();
-     let startPlanning = document.getElementById("submit-dimension-button");
-     let height = document.getElementById("height-input").value * 5;
-     let width = document.getElementById("width-input").value * 5;
-    //  const canvas = document.getElementById("canvas");
-    //  const ctx = drawCanvas.getContext("2d");
+     let feetHeight = document.getElementById("height-input-feet").value;
+     let inchesHeight = document.getElementById("height-input-inches").value;
+     let height = ((feetHeight * 12) + inchesHeight) * .5;
+     let feetWidth = document.getElementById("width-input-feet").value;
+     let inchesWidth = document.getElementById("width-input-inches").value;
+     let width = ((feetWidth * 12) + inchesWidth) * .6;
+    
+     let container = document.getElementById("konvaContainer");
+     container.style.display = 'block';
+
      ctx.strokeStyle = "black";
      ctx.lineWidth = 5;
      ctx.strokeRect(80, 80, width, height);
+
+     ctx.font = "18px Lato";
+     ctx.fillStyle = "steelblue"
+     ctx.fillText(feetWidth+"'"+inchesWidth+"''", 60+(width/2), 70);
+     ctx.fillText(feetHeight+"'"+inchesHeight+"''", 20, 60+(height/2));
      modal.style.display = "none";
    })
-});
 
+   let closeTipsX = document.getElementById("instruction-container-close");
+   let tipsContainer = document.getElementById("instruction-container");
+
+   closeTipsX.onclick = function () {
+     tipsContainer.style.display = "none"
+   };
+
+   let openTipsBtn = document.getElementById("tips-open");
+
+   openTipsBtn.onclick = function () {
+     tipsContainer.style.display = "flex"
+   };
+  
+    document.getElementById('delete-object-button').addEventListener('click', () => {
+      const tr = MyCanvas.layer.find('Group').toArray().find(group => group.nodes()[0] === currentShape);
+      group.destroy();
+      currentShape.destroy();
+      MyCanvas.layer.draw();
+   });
+});

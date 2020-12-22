@@ -4,32 +4,28 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="./dist/main.css" />   
-        <link rel="icon" href="./dist/images/favicon.ico">
-        <script type="text/javascript" src="paper/paper-full.min.js" canvas="myCanvas"></script>
-            <script type="text/paperscript" src="js/myScript.js" canvas="myCanvas"></script>
-        <title>AD DESIGN</title>
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato" />
+        <link rel="stylesheet" href="./dist/main.css" type="text/css"/>  
+        <link rel="stylesheet" href="./src/styles/index.css" type="text/css" />
+        <script type="text/javascript" src="./dist/main.js"></script>
+        <script src="https://unpkg.com/konva@7.2.1/konva.min.js"></script>
+        <title>DS DESIGN</title>
     </head>
 
     <body id="body">
         <Header class="header-main">
             <nav class="header-nav-main">
-                
+                <div class="header-nav-left-corner">
                 <svg class="header-icon" focusable="false" viewBox="0 0 32 32" width="32" height="32"
                     xmlns="http://www.w3.org/2000/svg">
                     <title>Menu</title>
                     <path d="M8 10h16v2H8v-2zm0 5h16v2H8v-2zm0 5h16v2H8v-2z" fill-rule="evenodd"></path>
                 </svg>
-                <!-- <ul id="myDropdown" class="dropdown-content">
-                    <li><a href="https://www.linkedin.com/in/drew-shroyer-861b32a4/">LinkedIn</a></li>
-                    <li><a href="https://www.linkedin.com/in/drew-shroyer-861b32a4/">Github</a></li>
-                    <li><a href="www.drewshroyer.com">Contact</a></li>
-                    </ul> -->
                 </div>
-                </div>
-                <h1 class="header-nav-title"> DS</h1>
+            </div>
+                <div><a class="DS-header" href="https://www.drewshroyer.com/" target="_blank">DS</a></div>
                 <div class="header-nav-right-corner">
-                    <div class="linkedin-button-header"><a href="https://www.linkedin.com/in/drew-shroyer-861b32a4/"
+                    <div class="linkedin-button-header"><a href="https://www.linkedin.com/in/drew-shroyer-861b32a4/" target="_blank"
                         >Linkedin</a>
                     </div>
                     <svg id="header-icon-search" focusable="false" viewBox="0 0 32 32" width="32" height="32"
@@ -53,28 +49,46 @@
                         <div id="header-nav-title"> DS</div>
                         <div class="entry-modal-title">ENTER YOUR ROOM DIMENSIONS</div>
                         <div class="height-width-modal">
-                            Height:<input id="height-input" class="input-container-modal-form" placeholder="inches"></div>
+                            Height:<input id="height-input-feet" class="input-container-modal-form" placeholder="feet">
+                            <input id="height-input-inches" class="input-container-modal-form" placeholder="inches"></div>
                         <div class="height-width-modal">
-                        Width:<input id="width-input" class="input-container-modal-form" placeholder="inches"></div>
+                        Width:<input id="width-input-feet" class="input-container-modal-form" placeholder="feet">
+                    <input id="width-input-inches" class="input-container-modal-form" placeholder="inches"></div>
                         <button id="submit-dimension-button" class="start-planning-modal-button">Start Planning</button>
                         </form>
                     </div>
             </section>
 
         <div class="right-canvas-container">
-            <div class="subnavbar-container">
+            <div class="subnavbar-container" id="subnavbar-container">
                 <div class="open-and-new-buttons">
                     <button class="new-layout-button" id="myBtn">New</button>
                     <a href="/"><h2 id="open-file">Clear</h2></a>
                 </div>
+
                 <div class="print-and-save-buttons">
+                    <h2 id="tips-open">Tips</h2>
                     <h2 id="print-file">Print</h2>
                     <h2 id="download-file">Save</h2>
-                </div>   
+                </div>  
+
             </div>
-            <canvas id="drawCanvas">
-            </canvas>
-            <script src="./dist/main.js"></script>
+            <div id="konvaContainer"></div>
+                <canvas id="myCanvas"></canvas>
+                <div id="delete-object-button">DELETE</div>
+                <div id="instruction-container">
+                    <span class="tips-close" id="instruction-container-close">&times;</span>
+                    <div class="tip-modal-title ">TIPS</div>
+                    <ul class="tips-dashed">
+                        <li> click any object from the furniture sidebar section to add it to the canvas</li>
+                        <li> select an object to resize/rotate by clicking directly onto the object</li>
+                        <li> deselect by clicking on a new object or any blank spot in the canvas</li>
+                        <li> objects may be dragged with or without being heighlighted</li>
+                        <li> use the 'CLEAR' navigation button to clear all objects from the canvas</li>
+                        <li> use the 'NEW' navigation button to redefine the shape of your room</li>
+                        <li> if you close these tips, but get lost, easily rerender using the "TIPS" navigation button </li>
+                    </ul>
+                </div>
             </div>
         </section>   
         </div>

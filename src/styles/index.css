@@ -10,6 +10,39 @@ body {
 h1 {
     font-family: Didonesque;
     font-size: 32px;
+    padding-left: 40px;
+    font-weight: 100;
+    letter-spacing: -2px;
+}
+
+#konvaContainer {
+    display: none;
+    background-color: transparent;
+    z-index: 1;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 11vh;
+    left: 20vw;
+    right: 0;
+    bottom: 0;
+}
+
+#instruction-container {
+    position: absolute;
+    right: 3vw;
+    top: 25vh;
+    height: 50vh;
+    width: 16vw;
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.DS-header {
+    font-family: Didonesque;
+    font-size: 32px;
     padding-left: 105px;
     font-weight: 100;
     letter-spacing: -2px;
@@ -27,7 +60,6 @@ h1 {
     align-items: center;
     padding-left: 12px;
 }
-
 .header-nav-right-corner {
     margin-top: 2px;
     display: flex;
@@ -36,7 +68,6 @@ h1 {
     justify-content: center;
     padding-right: 12px;
 }
-
 a {
     text-decoration: none;
     color: #2B2B2B;
@@ -88,6 +119,7 @@ a:hover {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    background-color: white;
 }
 
 .open-and-new-buttons {
@@ -123,7 +155,7 @@ h2:hover {
     overflow: scroll;
 }
 
-#drawCanvas {
+#myCanvas {
     background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QwZDBkMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDBkMGQwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=");
     background-repeat: repeat;
     border-right: 1px solid #dddddd;
@@ -138,7 +170,7 @@ h2:hover {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1; /* Sit on top */
+  z-index: 8; /* Sit on top */
   padding-top: 100px; /* Location of the box */
   left: 0;
   top: 0;
@@ -166,7 +198,7 @@ h2:hover {
     transform: translate(-50%, -50%);
     width: 400px;
     height: 350px;
-    z-index: 1;
+    z-index: 2;
     color: black;
     background-color: white;
     padding: 50px 150px 100px 150px;
@@ -176,6 +208,7 @@ h2:hover {
     flex-direction: column;
     justify-content: center;
     align-items: space-between;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 .entry-modal-title {
@@ -203,14 +236,15 @@ h2:hover {
 
 .height-width-modal {
     font-size: 24px;
-    padding: 20px;
+    padding: 10px;
 }
 
 .input-container-modal-form {
+    width: 128px;
     text-align: right;
-    padding: 15px 6px 0px 70px;
-    margin-left: 15px;
-    font-size: 18px;
+    padding: 15px 0px 0px 0px;
+    margin-left: 20px;
+    font-size: 14px;
     border: none;
     border-bottom: 2px solid black;
 }
@@ -234,8 +268,7 @@ h2:hover {
     color: black;
     background-color: white;
     border-bottom: 2px solid black;
-         cursor: pointer;
-
+    cursor: pointer;
 }
 
 .close {
@@ -256,15 +289,19 @@ h2:hover {
 }
 
 .sidebar-category-title {
-    width: calc(20% - 20px);
+      display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 17%;
+    height: 5vh;
     position: fixed;
     font-size: 16px;
     background-color: #dddddd;
     text-align: left;
     letter-spacing: 1px;
-    padding: 14px 0px 15px 20px;
     margin-top: 0px;
     color: black;
+    z-index: 0;
 }
 
 .sidebar-category-shapes-ul {
@@ -273,7 +310,7 @@ h2:hover {
     justify-content: space-around;
     flex-wrap: wrap;
     list-style-type: none;
-    margin: 40px 20px 0px -20px;
+    margin: 60px 20px 0px -20px;
 }
 
 .sidebar-category-shapes-li {
@@ -285,9 +322,109 @@ h2:hover {
     text-transform: uppercase;
     font-size: 12px;
     transition: 1s;
+    z-index: 0;
 }
 
 .sidebar-category-shapes-li:hover {
      text-decoration: underline;
      cursor: pointer;
+}
+
+.canvas-menu-container{
+    width: 20%;
+    height: 5%;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    justify-content: space-between;
+    border: none;
+}
+
+.canvas-menu-img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition-duration: 0.2s;
+  transition: ease; }
+
+.canvas-menu-img:hover {
+  transform: scale(1.1); }
+
+#instruction-container {
+    position: absolute;
+    right: 3vw;
+    top: 25vh;
+    height: 50vh;
+    width: 16vw;
+    background-color: #dddddd;
+    color: black;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    z-index: 2;
+}
+
+  #instruction-container-close {
+      padding-right: 7px;
+  }
+
+  .tip-modal-title {
+    font-family: Didonesque;
+    letter-spacing: 1px;
+    width: 90%;
+    font-size: 28px;
+    font-weight: 300;
+    margin: 25px 10px 5px 15px;
+    text-align: center;
+    border-bottom: 1px solid black;
+}
+
+.tips-close {
+    color: black;
+    float: right;
+    font-size: 24px;
+    font-weight: 400;
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    cursor: pointer;
+}
+
+ul {
+  margin: 0;
+}
+ul.tips-dashed {
+    list-style-type: none;
+    margin: 5px 0px 25px -15px;
+    overflow: scroll;
+}
+ul.tips-dashed > li {
+  text-indent: -5px;
+}
+ul.tips-dashed > li:before {
+  content: "-";
+  text-indent: -5px;
+}
+li {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 5px 15px 5px 0px;
+}
+
+#delete-object-button {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    right: 2vw;
+    bottom: 2vh;
+    background-color: #dddddd;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+    cursor: pointer;
 }

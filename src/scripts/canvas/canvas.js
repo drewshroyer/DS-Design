@@ -1,494 +1,1081 @@
 import { SHAPES } from "../util/constants";
-import paper, {
-  Project,
-  Path,
-  Group,
-  PointText,
-  tool,
-  Tool,
-  Rectangle,
-  Point,
-  Size,
-} from "paper";
-import { getAngle } from "../util/get_angle";
+import Konva from 'konva';
+import { Group, Layer, Stage, Circle } from 'konva';
+import paper, { Project, tool, Tool} from 'paper';
 
-import Modal from "../modal/modal";
-
-const boundsIdentifierObj = {
-  1: "topLeft",
-  2: "topRight",
-  3: "bottomRight",
-  0: "bottomLeft",
-};
-
-const boundsCenterIdentifierObj = {
-  1: "topCenter",
-  2: "rightCenter",
-  3: "bottomCenter",
-  0: "leftCenter",
-};
-const LINE = "line";
-
-class DrawCanvas {
+class MyCanvas {
   constructor(canvasElement) {
-    this.canvasElement = canvasElement;
-    this.centerPosition = this.getCenterPosition();
-    this.strokeColor = "black";
+    this.canvasElement =  canvasElement;
+    this.strokeColor = 'black';
     this.fillColor = "white";
-    this.defaultSize = [200, 200];
+    this.defaultSize = [100,100];
     this.currentActiveItem = null;
     this.strokeWidth = 2;
-
-    // sets up paper js on canvas
     paper.setup(canvasElement);
-    this.project = new Project(canvasElement);
+    this.project = new Project(canvasElement)
     this.canvasScaleValue = 1;
-
-    //creating tool
     this.tool = new Tool();
-    // has moved at least 10 points:
     tool.minDistance = 2;
 
-    //binds methods
-    this.drawObjectShape = this.drawObjectShape.bind(this);
-    this.drawTextShape = this.drawTextShape.bind(this);
+    // set up the Konva Stage and Layer 
+    this.stage = new Stage({
+      container: 'konvaContainer',
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
 
-    //general method binding
-    this.getCenterPosition = this.getCenterPosition.bind(this);
-
-    //user interaction method binding
-    this.onToolDoubleClick = this.onToolDoubleClick.bind(this);
-    this.onToolMouseDown = this.onToolMouseDown.bind(this);
-    this.setOneItemSelected = this.setOneItemSelected.bind(this);
-    this.onToolDrag = this.onToolDrag.bind(this);
-    this.onToolKeyDown = this.onToolKeyDown.bind(this);
-
-    //tool level clicklistener
-    this.tool.onMouseDown = this.onToolMouseDown;
-    this.tool.onMouseUp = this.onToolMouseUp;
-    this.tool.onMouseDrag = this.onToolDrag;
-    this.tool.onKeyDown = this.onToolKeyDown;
+    this.layer = new Layer();
+    // add transformers to each binding
+    this.addTransformerFunction = this.addTransformerFunction.bind(this);
+    // creates the delete function 
+    this.addDeleteFunction = this.addDeleteFunction.bind(this);
+    //shapes method binding
+    this.drawShapes = this.drawShapes.bind(this);
+    // furniture elements binding
+    this.drawQueen = this.drawQueen.bind(this);
+    this.drawTwin = this.drawTwin.bind(this);
+    this.drawRug = this.drawRug.bind(this);
+    this.drawRoundRug = this.drawRoundRug.bind(this);
+    this.drawDining = this.drawDining.bind(this);
+    this.drawOffice = this.drawOffice.bind(this);
+    this.drawTVCabinent = this.drawTVCabinent.bind(this);
+    this.drawArmChair = this.drawArmChair.bind(this);
+    this.drawUpholstered = this.drawUpholstered.bind(this);
+    this.drawEndTable = this.drawEndTable.bind(this);
+    this.drawRoundTable = this.drawRoundTable.bind(this);
+    this.drawLoveSeat = this.drawLoveSeat.bind(this);
+    this.drawCoffeeTable = this.drawCoffeeTable.bind(this);
+    this.drawFirePlace = this.drawFirePlace.bind(this);
+    this.drawStairs = this.drawStairs.bind(this);
+    this.drawSofa = this.drawSofa.bind(this);
+    // this.drawRightDoor = this.drawRightDoor.bind(this);
+    this.drawLeftDoor = this.drawLeftDoor.bind(this);
+    // anchor binding
+    this.addAnchor = this.addAnchor.bind(this);
+    this.update = this.update.bind(this);
+    this.addText = this.addText.bind(this);
 
     //add double click listener on canvas because tool have no double click listener
     this.canvasElement.addEventListener("dblclick", this.onToolDoubleClick);
 
-    //line attachement function binding
-    this.checkLineAttachment = this.checkLineAttachment.bind(this);
+    //set right menu liteners
+    this.setMenuClickListener = this.setMenuClickListener.bind(this);
 
-    //line render function
-    this.reRenderLine = this.reRenderLine.bind(this);
+    this.setMenuClickListener();
   }
 
-  //set bring to front listener for items
-  bringToFront() {
-    this.currentActiveItem.bringToFront();
+  setMenuClickListener(){
+    const downloadFileElement = document.getElementById('download-file');
+    downloadFileElement.addEventListener('click', this.downloadAsSVG.bind(this));
   }
 
-  //set move to back listener for items
-  moveToBack() {
-    this.currentActiveItem.sendToBack();
+  openFile(){
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = false;
+    input.accept = 'image/svg+xml';
+    input.onchange = () => {
+            this.project.importSVG(URL.createObjectURL(input.files[0]),(group, svg)=>{
+              this.project.clear();
+              const that = this;
+              while(group.children[1].children.length > 0){
+                that.project.activeLayer.addChild(group.children[1].children[0]);
+              }
+            })
+    };
+    input.click();
   }
 
-  //shape draw distributor
-  drawShapes(shapeName) {
-    switch (shapeName) {
-      case SHAPES.CLASS:
-      case SHAPES.OFFICE:
-      case SHAPES.ENDTABLE:
-      case SHAPES.RUG:
-          this.drawRug();
-          break;
-      case SHAPES.ROUNDTABLE:
-      case SHAPES.TVCABINENT:
-      case SHAPES.ROUNDRUG:
-      case SHAPES.LOVESEAT:
-      case SHAPES.COFFEETABLE:
-      case SHAPES.FIREPLACE:
-      case SHAPES.STAIRS:
-      case SHAPES.UPHOLSTERED:
-      case SHAPES.DINING:
-      case SHAPES.ROUNDTABLE:
-      case SHAPES.TVCABINENT:
+  downloadAsSVG() {
+    if(this.project.activeLayer.children.length == 0) return;
+    const fileName = `ad_design_${Date.now()}.svg`;
+    let url = "data:image/svg+xml;utf8," + encodeURIComponent(this.project.exportSVG({asString:true}));
+    let downloadLinkElement = document.createElement("a");
+    downloadLinkElement.download = fileName;
+    downloadLinkElement.href = url;
+    downloadLinkElement.click();
+  }
+
+  drawShapes(shapeName){
+
+    switch (shapeName) {  
       case SHAPES.QUEEN:
+        this.drawQueen(this.stage, this.layer);
+        break;
       case SHAPES.TWIN:
-      case SHAPES.ARMCHAIR:
+        this.drawTwin(this.stage, this.layer);
+        break;
+      case SHAPES.RUG:
+        this.drawRug(this.stage, this.layer);
+        break;
       case SHAPES.SOFA:
-      case SHAPES.MODULE:
-        this.drawObjectShape(shapeName);
+        this.drawSofa(this.stage, this.layer) ;
         break;
-      case SHAPES.TITLE:
-        startPoint = new Point(
-          this.centerPosition.x - 25,
-          this.centerPosition.y - 25
-        );
-        this.drawTextShape(startPoint, "Add Text");
+      case SHAPES.ROUNDRUG:
+        this.drawRoundRug(this.stage, this.layer);
         break;
+      case SHAPES.DINING:
+        this.drawDining(this.stage, this.layer);
+        break;
+      case SHAPES.OFFICE:
+        this.drawOffice(this.stage, this.layer);
+        break;
+      case SHAPES.TVCABINENT:
+        this.drawTVCabinent(this.stage, this.layer);
+        break;
+      case SHAPES.ARMCHAIR:
+        this.drawArmChair(this.stage, this.layer);
+        break;
+      case SHAPES.UPHOLSTERED:
+        this.drawUpholstered(this.stage, this.layer);
+        break;
+      case SHAPES.ENDTABLE:
+        this.drawEndTable(this.stage, this.layer);
+        break;
+      case SHAPES.ROUNDTABLE:
+        this.drawRoundTable(this.stage, this.layer);
+        break;
+      case SHAPES.LOVESEAT:
+        this.drawLoveSeat(this.stage, this.layer);
+        break;
+      case SHAPES.COFFEETABLE:
+        this.drawCoffeeTable(this.stage, this.layer);
+        break;
+      case SHAPES.FIREPLACE:
+        this.drawFirePlace(this.stage, this.layer);
+        break;
+      case SHAPES.DOORRIGHT:
+        this.drawRightDoor(this.stage, this.layer);
+        break;
+      case SHAPES.DOORLEFT:
+        this.drawLeftDoor(this.stage, this.layer);
+        break;
+      case SHAPES.STAIRS:
+        this.drawStairs(this.stage, this.layer);
       default:
         break;
     }
   }
 
+  // prepObject(stage, layer, queenKonvaImg) {
+  //   let group = new Group({
+  //       x: 300,
+  //       y: 200,
+  //       draggable: true,
+  //   });
 
-  drawRug() {
-    rug = new Image();
-    rug.src = "../../images/rug.svg";
-    rug.onload = function () {
-      context.drawImage(rug, 0, 0);
-    };
-}
+  //   let tr1 = new Konva.Transformer({
+  //     nodes: [group],
+  //     centeredScaling: false,
+  //     rotationSnaps: [0, 90, 180, 270],
+  //     resizeEnabled: true,
+  //   });
+    
+  //   stage.add(layer);
+  //   layer.add(group);
+  //   layer.add(tr1);
 
-  // adds text to the clicked area
-  drawTextShape(position, text) {
-    //create text shape
-    let textShape = new PointText(position);
-    textShape.fillColor = this.strokeColor;
-    textShape.content = text;
+  // }
 
-    //adds doubleclick listner to text
-    textShape.onDoubleClick = (e) => {
-      //show modal to update text
-      if (textShape.bounds.selected) {
-        new Modal((updatedText) => {
-          textShape.content = updatedText;
-        }).show();
-      }
-    };
+  drawQueen(stage, layer) {
+    let queenImg = new Image();
+     let queenKonvaImg = new Konva.Image({
+      width: 61.9875776*2,
+      height: 80*2,
+    });
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
 
-    return textShape;
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+    
+    // let deleteButton = new Konva.Circle({
+    //     radius: 10,
+    //     fill: 'red'
+    // });
+
+    // tr1.add(deleteButton);
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(queenKonvaImg);
+
+  this.addTransformerFunction(tr1, group, stage, layer);;
+
+    queenImg.onload = function() {
+      queenKonvaImg.image(queenImg)
+      layer.draw();
+    }
+    queenImg.src = "src/images/queen-bed.svg";
+    this.addDeleteFunction();
   }
 
-  drawObjectShape(type) {
-    //creates object rectangle
-    const startPoint = new Point(
-      this.centerPosition.x - 50,
-      this.centerPosition.y - 25
-    );
-    const rectangle = new Path.Rectangle(
-      startPoint.x,
-      startPoint.y,
-      this.defaultSize[0],
-      this.defaultSize[0] / 2
-    );
-    this.setStrokeAndFill(rectangle);
-
-    //create textshape
-    if (type !== SHAPES.SQUARE) {
-      const textShapeStartPoint = new Point(
-        startPoint.x + 30,
-        startPoint.y + 30
-      );
-      const textShape = this.drawTextShape(textShapeStartPoint, type);
-    }
+  addDeleteFunction() {
+    document.getElementById('delete-object-button').addEventListener('click', () => {
+      currentShape.destroy();
+      layer.draw();
+    });
   }
 
-  //on tool click
-  onToolMouseDown(e) {
-    //toggle item selected
-    this.setOneItemSelected(e);
+  drawSofa(stage, layer) {
+    let height = 48.17;
+    let width = 100;
+    let sofaImg = new Image();
 
-    //return if no currentActiveItem
-    if (!this.currentActiveItem) return;
+    let sofaKonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
 
-    //clearing currentActiveItem data to fix the issue of unintended moves
-    this.currentActiveItem.data.state = null;
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
 
-    if (this.currentActiveItem.contains(e.point)) {
-      this.currentActiveItem.data.state = "move";
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(sofaKonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);
+
+    sofaImg.onload = function() {
+      sofaKonvaImg.image(sofaImg)
+      layer.draw();
     }
-    //set items data based on item mouseDown point
-    if (this.currentActiveItem.data.type !== LINE) {
-      if (
-        this.currentActiveItem.hitTest(e.point, { bounds: true, tolerance: 5 })
-      ) {
-        //get bounds of the shape
-        const bounds = this.currentActiveItem.bounds;
+    sofaImg.src = "src/images/sofa.svg";
+  }
 
-        //itrating to find the exact bound point
-        for (let [key, value] of Object.entries(boundsIdentifierObj)) {
-          if (bounds[value].isClose(e.point, 5)) {
-            const oppositeBound =
-              bounds[boundsIdentifierObj[(parseInt(key) + 2) % 4]];
-            //get opposite bound point
-            const oppositePoint = new Point(oppositeBound.x, oppositeBound.y);
-            //get current bound point
-            const centerPoint = new Point(bounds[value].x, bounds[value].y);
 
-            //set shape data to be used for resizing later
-            this.currentActiveItem.data.state = "resize";
-            this.currentActiveItem.data.from = oppositePoint;
-            this.currentActiveItem.data.to = centerPoint;
-            break;
-          }
+  drawTwin(stage, layer) {
+    let height = 80;
+    let width = 43.0017452;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr, group, stage, layer);
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/twin-bed.svg";
+  }
+
+  drawRug(stage, layer) {
+    let height = 48.17;
+    let width = 100;
+    let rugImg = new Image();
+
+    let rugKonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(rugKonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);;
+
+    rugImg.onload = function() {
+      rugKonvaImg.image(rugImg)
+      layer.draw();
+    }
+    rugImg.src = "src/images/rug.svg";
+  }
+
+  drawRoundRug(stage, layer) {
+    let height = 80;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+     let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/round-rug.svg";
+  }
+
+  drawDining(stage, layer) {
+    let height = 80;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/dining-table.svg";
+  }
+
+  drawOffice(stage, layer) {
+   let height = 47.0951157;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+     this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/office-desk.svg";
+  }
+
+  drawTVCabinent(stage, layer) {
+    let height = 23.759;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+   this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/tv-cabinent.svg";
+  }
+
+  drawArmChair(stage, layer) {
+    let height = 80;
+    let width = 70.176;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+     this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/arm-chair.svg";
+  }
+
+  drawUpholstered(stage, layer) {
+   let height = 80;
+    let width = 70.176;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+     this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/upholstered-chair.svg";
+  }
+
+  drawEndTable(stage, layer) {
+    let height = 40;
+    let width = 38.3507;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/end-table.svg";
+  }
+
+  drawRoundTable(stage, layer) {
+    let height = 80;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/round-table.svg";
+  }
+
+  drawLoveSeat(stage, layer) {
+    let height = 47.7246654;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/love-seat.svg";
+  }
+
+  drawCoffeeTable(stage, layer) {
+    let height = 43.0769231;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(KonvaImg);
+
+     this.addTransformerFunction(tr1, group, stage, layer);;
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/coffee-table.svg";
+  }
+
+  drawFirePlace(stage, layer) {
+    let height = 42.8456376;
+    let width = 80;
+    let fireImg = new Image();
+
+    let fireKonvaImg = new Konva.Image({
+      width: 80*2,
+      height: 80,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(fireKonvaImg);
+
+   this.addTransformerFunction(tr1, group, stage, layer);;
+
+    fireImg.onload = function() {
+      fireKonvaImg.image(fireImg)
+      layer.draw();
+    }
+    fireImg.src = "src/images/fire-place.svg";    
+  }
+
+  drawStairs(stage, layer) {
+    let height = 80;
+    let width = 42.8456376;
+    let stairImg = new Image();
+    let stairKonvaImg = new Konva.Image({
+      width: (42.8456376*2),
+      height: 80*2,
+    });
+    
+    let group = new Group({
+      x: 300,
+      y: 200,
+      draggable: true,
+    });
+
+    let tr1 = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr1);
+    group.add(stairKonvaImg);
+
+    this.addTransformerFunction(tr1, group, stage, layer);;
+
+    stairImg.onload = function() {
+      stairKonvaImg.image(stairImg)
+      layer.draw();
+    }
+
+    stairImg.src = "src/images/stairs.svg";
+  }
+
+  drawLeftDoor(stage, layer) {
+    let height = 80;
+    let width = 80;
+    let Img = new Image();
+
+    let KonvaImg = new Konva.Image({
+      width: width*2,
+      height: height*2,
+    });
+    
+    let group = new Group({
+        x: 300,
+        y: 200,
+        draggable: true,
+    });
+
+    let tr = new Konva.Transformer({
+      nodes: [group],
+      centeredScaling: false,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: true,
+    });
+
+    stage.add(layer);
+    layer.add(group);
+    layer.add(tr);
+    group.add(KonvaImg);
+
+    this.addTransformerFunction(tr, group, stage, layer);
+
+    Img.onload = function() {
+      KonvaImg.image(Img)
+      layer.draw();
+    }
+    Img.src = "src/images/door-left.svg";
+  }
+
+  addText(height, width, group) {
+    let heightFeet = Math.floor(height / 24);
+    let heightInches = Math.floor(((height/24) - Math.floor(height / 24)) * 12) 
+    let widthFeet = Math.floor(width / 24);
+    let widthInches = Math.floor(((width/24) - Math.floor(width / 24)) * 12)
+
+    let heightText = new Konva.Text({
+        x: group.x() - 330,
+        y: group.y() - 140,
+        text: `${heightFeet}'${heightInches}"`,
+        fontSize: 12,
+        fontFamily: 'Lato',
+        fill: 'black',
+    });
+
+    let widthText = new Konva.Text({
+        x: group.x() - 265,
+        y: group.y() -220,
+        text: `${widthFeet}'${widthInches}"`,
+        fontSize: 12,
+        fontFamily: 'Lato',
+        fill: 'black',
+    });
+
+    group.add(heightText);
+    group.add(widthText);
+  }
+
+  addTransformerFunction(tr, group, stage, layer) {
+  let selectionRectangle = new Konva.Rect({
+        fill: 'rgba(0,0,255,0.5)',
+      });
+      group.add(selectionRectangle);
+
+      let x1, y1, x2, y2;
+      stage.on('mousedown touchstart', (e) => {
+        // do nothing if we mousedown on eny shape
+        if (e.target !== stage) {
+          return;
         }
-      }
-    } else {
-      //only for shapes with type LINE
-      const headCircleItem = this.currentActiveItem.firstChild.children[3];
-      if (headCircleItem.contains(e.point)) {
-        this.currentActiveItem.data.state = "resize";
-      }
-    }
-  }
+        x1 = stage.getPointerPosition().x;
+        y1 = stage.getPointerPosition().y;
+        x2 = stage.getPointerPosition().x;
+        y2 = stage.getPointerPosition().y;
 
-  //item drag listener
-  onToolDrag(e) {
-    // debugger
-    if (this.currentActiveItem == null) return;
+        selectionRectangle.visible(true);
+        selectionRectangle.width(0);
+        selectionRectangle.height(0);
+        layer.draw();
+      });
 
-    if (this.currentActiveItem.data.state === "move") {
-      this.currentActiveItem.position = e.point;
-
-      //check if the shape has any attached lines
-      if (this.currentActiveItem.data.lineShape) {
-        const lineShapeObject = this.currentActiveItem.data.lineShape;
-        for (let [key, value] of Object.entries(lineShapeObject)) {
-          const element = value[1];
-          const lineStartPoint =
-            element.firstChild.firstChild.segments[0].point;
-          const lineType = element.data.lineType;
-          const lineId = element.data.lineId;
-          element.remove();
-          element = this.drawLineShape(
-            lineStartPoint,
-            this.currentActiveItem.bounds[value[0]],
-            lineType
-          );
-          element.data.lineId = lineId;
-          lineShapeObject[key] = [value[0], element];
+      stage.on('mousemove touchmove', () => {
+        // no nothing if we didn't start selection
+        if (!selectionRectangle.visible()) {
+          return;
         }
-      }
-    } else if (this.currentActiveItem.data.state === "resize") {
-      if (this.currentActiveItem.data.type === LINE) {
-        //shapes with type line, re-rendering line on each user move
-        this.reRenderLine(e.point);
+        x2 = stage.getPointerPosition().x;
+        y2 = stage.getPointerPosition().y;
 
-        this.checkLineAttachment(e);
-      } else {
-        //shapes other than line, updating the bounds
-        this.currentActiveItem.bounds = new Rectangle(
-          this.currentActiveItem.data.from,
-          e.point
+        selectionRectangle.setAttrs({
+          x: Math.min(x1, x2),
+          y: Math.min(y1, y2),
+          width: Math.abs(x2 - x1),
+          height: Math.abs(y2 - y1),
+        });
+        layer.batchDraw();
+      });
+
+      stage.on('mouseup touchend', () => {
+        // no nothing if we didn't start selection
+        if (!selectionRectangle.visible()) {
+          return;
+        }
+        // update visibility in timeout, so we can check it in click event
+        setTimeout(() => {
+          selectionRectangle.visible(false);
+          layer.batchDraw();
+        });
+
+        let shapes = stage.find('.rect').toArray();
+        let box = selectionRectangle.getClientRect();
+        let selected = shapes.filter((shape) =>
+          Konva.Util.haveIntersection(box, shape.getClientRect())
         );
-      }
-      this.currentActiveItem.bounds.selected = true;
-    }
-  }
+        tr.nodes(selected);
+        layer.batchDraw();
+      });
 
-  drawLineShape(startPoint, endPoint, lineType) {
-    let mainGroup = new Group();
-    let group = new Group();
-
-    //draw line
-    const line = new Path.Line(startPoint, endPoint);
-    this.setStrokeAndFill(line);
-
-    // draw head circle
-    const headCircle = new Path.Circle(endPoint, 5);
-    headCircle.fillColor = "black";
-    headCircle.strokeWidth = 1;
-
-    //draw middle circle
-    const midPoint = new Point(
-      (startPoint.x + endPoint.x) / 2,
-      (startPoint.y + endPoint.y) / 2
-    );
-    const midCircle = new Path.Circle(midPoint, 4);
-    midCircle.fillColor = "black";
-    midCircle.strokeWidth = 1;
-
-    //draw tail circle
-    const tailCircle = new Path.Circle(startPoint, 5);
-    tailCircle.fillColor = "black";
-    tailCircle.strokeWidth = 1;
-
-    //add circles and line to group
-    group.addChild(line);
-    group.addChild(tailCircle);
-    group.addChild(midCircle);
-    group.addChild(headCircle);
-
-    //draw arrow shape
-    const headShape = new Path();
-    headShape.strokeColor = this.strokeColor;
-    headShape.strokeWidth = this.strokeWidth;
-
-    let arrowCenter = endPoint;
-
-    //based on line type draw shape
-    if (lineType !== SHAPES.DIVIDER) {
-      const leftEdge = new Point(arrowCenter.x - 10, arrowCenter.y - 10);
-      const rightEdge = new Point(arrowCenter.x - 10, arrowCenter.y + 10);
-      headShape.add(leftEdge);
-      headShape.add(arrowCenter);
-      headShape.add(rightEdge);
-
-      if (lineType === SHAPES.AGGREGATION || lineType === SHAPES.COMPOSITION) {
-        const bottomRightEdge = new Point(arrowCenter.x - 20, arrowCenter.y);
-        const bottomLeftEdge = leftEdge;
-        headShape.add(bottomRightEdge);
-        headShape.add(bottomLeftEdge);
-
-        if (lineType === SHAPES.AGGREGATION) {
-          headShape.strokeColor = "white";
-          headShape.fillColor = "white";
-          headShape.shadowColor = "gray";
-          headShape.shadowOffset = 1;
+      // clicks should select/deselect shapes
+      stage.on('click tap', function (e) {
+        // if we are selecting with rect, do nothing
+        if (selectionRectangle.visible()) {
+          return;
         }
 
-        if (lineType === SHAPES.COMPOSITION) {
-          headShape.fillColor = "black";
+        // if click on empty area - remove all selections
+        if (e.target === stage) {
+          tr.nodes([]);
+          layer.draw();
+          return;
         }
+
+        // do we pressed shift or ctrl?
+        const metaPressed = e.evt.shiftKey || e.evt.ctrlKey || e.evt.metaKey;
+        const isSelected = tr.nodes().indexOf(e.target) >= 0;
+
+        if (!metaPressed && !isSelected) {
+          // if no key pressed and the node is not selected
+          // select just one
+          tr.nodes([e.target]);
+        } else if (metaPressed && isSelected) {
+          // if we pressed keys and node was selected
+          // we need to remove it from selection:
+          const nodes = tr.nodes().slice(); // use slice to have new copy of array
+          // remove node from array
+          nodes.splice(nodes.indexOf(e.target), 1);
+          tr.nodes(nodes);
+        } else if (metaPressed && !isSelected) {
+          // add the node into selection
+          const nodes = tr.nodes().concat([e.target]);
+          tr.nodes(nodes);
+        }
+        layer.draw();
+      });
+   }
+
+    update(activeAnchor) {
+      let group = activeAnchor.getParent();
+
+      let topLeft = group.get('.topLeft')[0];
+      let topRight = group.get('.topRight')[0];
+      let bottomRight = group.get('.bottomRight')[0];
+      let bottomLeft = group.get('.bottomLeft')[0];
+      let image = group.get('Image')[0];
+
+      let anchorX = activeAnchor.getX();
+      let anchorY = activeAnchor.getY();
+
+      switch (activeAnchor.getName()) {
+        case 'topLeft':
+          topRight.y(anchorY);
+          bottomLeft.x(anchorX);
+          break;
+        case 'topRight':
+          topLeft.y(anchorY);
+          bottomRight.x(anchorX);
+          break;
+        case 'bottomRight':
+          bottomLeft.y(anchorY);
+          topRight.x(anchorX);
+          break;
+        case 'bottomLeft':
+          bottomRight.y(anchorY);
+          topLeft.x(anchorX);
+          break;
+      }
+      image.position(topLeft.position());
+
+      let width = topRight.getX() - topLeft.getX();
+      let height = bottomLeft.getY() - topLeft.getY();
+      if (width && height) {
+        image.width(width);
+        image.height(height);
       }
     }
+      
+    addAnchor(group, x, y, name) {
+      let stage = group.getStage();
+      let layer = group.getLayer();
+      let anchor = new Circle({
+        x: x,
+        y: y,
+        stroke: '#000',
+        fill: 'blue',
+        strokeWidth: .5,
+        radius: 3,
+        name: name,
+        draggable: true,
+      });
 
-    //rotate the head shape
-    if (lineType !== SHAPES.DIVIDER)
-      headShape.rotate(
-        getAngle(endPoint.x, endPoint.y, startPoint.x, startPoint.y),
-        arrowCenter
-      );
+      anchor.on('dragmove', function () {
+        // console.log(this);
+        // debugger
+        let activeAnchor = this;
 
-    //add group to main group
-    mainGroup.addChild(group);
-    if (lineType !== SHAPES.DIVIDER) mainGroup.addChild(headShape);
-    mainGroup.data.type = LINE;
-    mainGroup.data.lineType = lineType;
-    mainGroup.data.lineId = Date.now();
-    return mainGroup;
-  }
+        let group = activeAnchor.getParent();
 
-  reRenderLine(headPosition) {
-    const lineStartPoint = this.currentActiveItem.firstChild.firstChild
-      .segments[0].point;
-    const lineType = this.currentActiveItem.data.lineType;
-    const lineId = this.currentActiveItem.data.lineId;
-    this.currentActiveItem.remove();
-    this.currentActiveItem = this.drawLineShape(
-      lineStartPoint,
-      headPosition,
-      lineType
-    );
-    this.currentActiveItem.data.state = "resize";
-    this.currentActiveItem.data.lineId = lineId;
-  }
+        let topLeft = group.get('.topLeft')[0];
+        let topRight = group.get('.topRight')[0];
+        let bottomRight = group.get('.bottomRight')[0];
+        let bottomLeft = group.get('.bottomLeft')[0];
+        let image = group.get('Image')[0];
 
-  // attach line to shapes
-  checkLineAttachment(event) {
-    //iteratethough each element to find the intresecting shape
-    this.project.activeLayer.children.forEach((child) => {
-      // find the shapes that line intersected with
-      if (
-        child != this.currentActiveItem &&
-        child.hitTest(event.point, { bounds: true, tolerance: 5 })
-      ) {
-        //add line to attached shapes
+        let anchorX = activeAnchor.getX();
+        let anchorY = activeAnchor.getY();
 
-        const bounds = child.bounds;
-        //itrating to find the exact bound point
-        for (let [key, value] of Object.entries(boundsCenterIdentifierObj)) {
-          if (bounds[value].isClose(event.point, 5)) {
-            //get center bound point of the side line touches
-            const centerPoint = new Point(bounds[value].x, bounds[value].y);
-            this.reRenderLine(centerPoint);
-
-            //set data to shape to allow shape to move line head with it as it is dragged
-
-            // check if the lineShape already exists
-            if (!child.data.lineShape) {
-              child.data.lineShape = {};
-            }
-
-            // add line currentActive Line Shape and also the side it is attached with
-            child.data.lineShape[this.currentActiveItem.data.lineId] = [
-              value,
-              this.currentActiveItem,
-            ];
+        switch (activeAnchor.getName()) {
+          case 'topLeft':
+            topRight.y(anchorY);
+            bottomLeft.x(anchorX);
             break;
-          }
+          case 'topRight':
+            topLeft.y(anchorY);
+            bottomRight.x(anchorX);
+            break;
+          case 'bottomRight':
+            bottomLeft.y(anchorY);
+            topRight.x(anchorX);
+            break;
+          case 'bottomLeft':
+            bottomRight.y(anchorY);
+            topLeft.x(anchorX);
+            break;
         }
-      } else {
-        //remove line attachement with shapes
-        if (child.data.lineShape) {
-          delete child.data.lineShape[this.currentActiveItem.data.lineId];
+        image.position(topLeft.position());
+
+        let width = topRight.getX() - topLeft.getX();
+        let height = bottomLeft.getY() - topLeft.getY();
+        if (width && height) {
+          image.width(width);
+          image.height(height);
         }
-      }
-    });
-  }
 
-  //on tool double click
-  onToolDoubleClick(e) {
-    if (e.ctrlKey) {
-      this.drawTextShape({ x: e.layerX, y: e.layerY }, "Add Text");
+        layer.draw();
+
+      });
+
+      anchor.on('mousedown touchstart', function () {
+        group.draggable(false);
+        this.moveToTop();
+      });
+
+      anchor.on('dragend', function () {
+        group.draggable(true);
+        layer.draw();
+      });
+
+      // add hover styling
+      anchor.on('mouseover', function () {
+        let layer = this.getLayer();
+        document.body.style.cursor = 'pointer';
+        this.strokeWidth(6);
+        layer.draw();
+      });
+
+      anchor.on('mouseout', function () {
+        let layer = this.getLayer();
+        document.body.style.cursor = 'default';
+        this.strokeWidth(2);
+        layer.draw();
+      });
+      group.add(anchor);
     }
-  }
-
-  //toggle item selecteion and saving currentActiveItem
-  setOneItemSelected(e) {
-    const position = e.point;
-    let clickedItems = [];
-    this.project.activeLayer.children.forEach((child) => {
-      if (child.contains(position)) {
-        clickedItems.push(child);
-      } else {
-        child.bounds.selected = false;
-      }
-    });
-    //return if no item is selected
-    if (clickedItems.length === 0) return;
-
-    //select the clicked item
-    let latestItem = clickedItems[0];
-    for (let i = 0; i < clickedItems.length; i++) {
-      if (latestItem.id < clickedItems[i].id) {
-        latestItem = clickedItems[i];
-      } else {
-        clickedItems[i].bounds.selected = false;
-      }
-    }
-    this.currentActiveItem = latestItem;
-    latestItem.bounds.selected = true;
-  }
-
-  // keyboard intraction to move shapes
-  onToolKeyDown(e) {
-    if (!this.currentActiveItem) return;
-
-    const position = this.currentActiveItem.position;
-    const step = 5;
-    switch (e.key) {
-      case "left":
-        position.x -= step;
-        break;
-      case "right":
-        position.x += step;
-        break;
-      case "up":
-        position.y -= step;
-        break;
-      case "down":
-        position.y += step;
-        break;
-      case "delete":
-        this.currentActiveItem.remove();
-        break;
-    }
-    this.currentActiveItem.position = position;
-  }
-
-  // return center position of canvas
-  getCenterPosition() {
-    return new Point({
-      x: this.canvasElement.clientWidth / 2,
-      y: this.canvasElement.clientHeight / 2,
-    });
-  }
-
-  // helper to set stroke and fill
-  setStrokeAndFill(item) {
+  
+  setStrokeAndFill(item){
     item.strokeWidth = this.strokeWidth;
     item.strokeColor = this.strokeColor;
     item.fillColor = this.fillColor;
   }
-}
 
-export default DrawCanvas;
+}
+export default MyCanvas;

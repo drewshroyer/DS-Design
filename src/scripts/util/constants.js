@@ -1,6 +1,4 @@
 export const SHAPES = {
-  SQUARE: "Square",
-  CIRCLE: "Circle",
   QUEEN: "Queen Bed",
   TWIN: "Twin Bed",
   RUG: "SQUARE RUG",
@@ -17,10 +15,5 @@ export const SHAPES = {
   COFFEETABLE: "COFFEE TABLE",
   FIREPLACE: "FIREPLACE",
   STAIRS: "STAIRS",
-  COMPONENT: "Component",
-  MODULE: "Module",
-  TITLE: "Title",
-  ACTIVITY: "Activity",
-  USECASE: "Use Case",
-  DECISION: "Decision",
+  DOORLEFT: "DOOR", 
 };
