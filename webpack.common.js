@@ -6,7 +6,7 @@ module.exports = {
     entry: path.resolve(__dirname, "src", "index.js"), //
     output: {
         path: path.join(__dirname, outputDir),
-        filename: "main.js",
+        filename: "[name].js",
         publicPath: "/dist/"
     },
     resolve: {
