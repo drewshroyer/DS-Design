@@ -717,7 +717,7 @@ class MyCanvas {
     });
     
     let group = new Group({
-        x: 300,
+        x: 400,
         y: 200,
         draggable: true,
     });
