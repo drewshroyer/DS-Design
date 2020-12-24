@@ -59,14 +59,8 @@ class MyCanvas {
     this.canvasElement.addEventListener("dblclick", this.onToolDoubleClick);
 
     //set right menu liteners
-    this.setMenuClickListener = this.setMenuClickListener.bind(this);
 
-    this.setMenuClickListener();
-  }
-
-  setMenuClickListener(){
-    const downloadFileElement = document.getElementById('download-file');
-    downloadFileElement.addEventListener('click', this.downloadAsSVG.bind(this));
+    // this.setMenuClickListener();
   }
 
   openFile(){
