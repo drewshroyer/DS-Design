@@ -1,6 +1,6 @@
 # DS-Design
 
-[<div style="text-align: center"><img src="dist/DS-Design.gif"></div>](https://www.drewshroyer.com/DS-Design/)
+[<div style="text-align: center"><img src="dist/images/DS-Design.gif"></div>](https://www.drewshroyer.com/DS-Design/)
 
 
 Based off the styling of Architectural Digest, the DS Design room planner allows user's to upload the dimensions of a paticular room and design their dream space. Using preloaded SVGS of tables, chairs, beds, benches, rugs, etc, users are able to layout their space to see the way that pieces of furniture fit inside it. 
