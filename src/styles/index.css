@@ -43,7 +43,7 @@ h1 {
 .DS-header {
   font-family: Didonesque;
   font-size: 32px;
-  padding-left: 105px;
+  padding-left: 100px;
   font-weight: 100;
   letter-spacing: -3px;
   color: #2b2b2b;
@@ -98,6 +98,7 @@ a:hover {
 #header-icon-search {
   font-size: 16px;
   margin-left: 40px;
+  cursor: pointer;
 }
 
 .line-across-the-top {
