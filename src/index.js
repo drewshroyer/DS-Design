@@ -75,6 +75,22 @@ window.addEventListener("DOMContentLoaded", (main) => {
      tipsContainer.style.display = "none"
    };
 
+   let hamburgerMenuContainer = document.getElementById("modal-hamburger-menu-container");
+   let hamburgerMenu = document.getElementById("hamburger-menu");
+   let hamburgerX = document.getElementById("close-hamburger-modal")
+   let konvaContainer = document.getElementById("konvaContainer");
+
+    hamburgerMenu.onclick = function () {
+     hamburgerMenuContainer.style.display = "flex";
+     konvaContainer.style.display = "none";
+     tipsContainer.style.display = "none";
+     modal.style.display = "none";
+   };
+
+   hamburgerX.onclick = function () {
+     hamburgerMenuContainer.style.display = "none"
+   };
+
    let openTipsBtn = document.getElementById("tips-open");
 
    openTipsBtn.onclick = function () {
