@@ -49,10 +49,12 @@ window.addEventListener("DOMContentLoaded", (main) => {
      event.preventDefault();
      let feetHeight = document.getElementById("height-input-feet").value;
      let inchesHeight = document.getElementById("height-input-inches").value;
-     let height = ((feetHeight * 12) + inchesHeight) * .5;
+    //  if(inchesHeight="inches") inchesHeight = 1;
+     let height = ((feetHeight * 6) + inchesHeight) * .5;
      let feetWidth = document.getElementById("width-input-feet").value;
      let inchesWidth = document.getElementById("width-input-inches").value;
-     let width = ((feetWidth * 12) + inchesWidth) * .6;
+    //  if(inchesWidth="inches") inchesWidth = 1;
+     let width = ((feetWidth * 6) + inchesWidth) * .6;
     
      let container = document.getElementById("konvaContainer");
      container.style.display = 'block';
@@ -87,7 +89,7 @@ window.addEventListener("DOMContentLoaded", (main) => {
      tipsContainer.style.display = "none";
      modal.style.display = "none";
    };
-   
+
     hamburgerMenu.onclick = function () {
      hamburgerMenuContainer.style.display = "flex";
      konvaContainer.style.display = "none";
